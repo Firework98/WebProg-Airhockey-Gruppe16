@@ -1,0 +1,19 @@
+.mainMenu-Button {
+    width : 100%;
+}
+#Wrapper{
+    width: 100%;
+}
+#Button-Array{
+    position: relative;
+    float: left;
+    width : 50%;
+    background-color: aquamarine;
+}
+.button-Align{
+    position: relative;
+    float: left;
+    width: 25%;
+    background-color: brown;
+    min-height: 1px;
+}
