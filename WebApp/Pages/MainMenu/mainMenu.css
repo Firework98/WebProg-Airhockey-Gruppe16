@@ -4,11 +4,11 @@ html,body{
     background-color: black;
     color: white;
     height: 100%;
-
 }
 header{
     height: 20%;
     overflow: no-display;
+    border-bottom: 1px solid white ;
 }
 main{
     height: 75%;
@@ -19,6 +19,7 @@ footer{
 }
 h1{
     font-size: 50px;
+    text-align: center;
 }
 #Wrapper{
     width: 100%;
@@ -26,7 +27,6 @@ h1{
 }
 #Button-Array{
     height: 100%;
-    position: relative;
     float: left;
     width : 20%;
 }
