@@ -29,6 +29,7 @@ h1{
 .mainMenu-Button {
     background-color: black;
     border-color: white;
+    border-radius: 12px;
     color: white;
     margin-top: 10%;
     height: 10%;
