@@ -6,3 +6,12 @@ a {
 a:hover, a:focus {
     text-decoration:underline;
 }
+input[type="button"]{
+    background-color: black;
+    border-color: white;
+    border-radius: 12px;
+    color: white;
+    margin-top: 10%;
+    height: 10%;
+    width : 10%;
+}
