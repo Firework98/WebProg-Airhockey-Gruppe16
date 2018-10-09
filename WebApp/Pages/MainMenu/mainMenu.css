@@ -10,7 +10,12 @@ main{
     height: 75%;
 }
 footer{
+    clear: both;
     height: 5%;
+}
+h1{
+    border: 
+    font-size: 50px;
 }
 #Wrapper{
     width: 100%;
@@ -20,17 +25,13 @@ footer{
     height: 100%;
     position: relative;
     float: left;
-    width : 50%;
-    background-color: aquamarine;
-}
-.button-Align{
-    position: relative;
-    float: left;
-    width: 25%;
-    background-color: brown;
-    min-height: 1px;
+    width : 20%;
 }
 .mainMenu-Button {
-     height: 25%;
-     width : 100%;
+    background-color: black;
+    border-color: white;
+    color: white;
+    margin-top: 10%;
+    height: 10%;
+    width : 100%;
  }
