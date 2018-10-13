@@ -1,1 +1,24 @@
 @import "../../GlobalStyles/global.css";
+
+html,body{
+    background-color: black;
+    color: white;
+    height: 100%;
+    overflow: hidden;
+}
+header{
+    height: 15%;
+    overflow: no-display;
+    border-bottom: 1px solid white;
+}
+main{
+    height: 75%;
+}
+footer{
+    clear: both;
+    height: 5%;
+}
+h1{
+    font-size: 60px;
+    text-align: center;
+}
