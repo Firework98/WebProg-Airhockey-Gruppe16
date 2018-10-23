@@ -4,3 +4,8 @@ function audioStop() {
         console.log(sound.played);
         sound.played = 0;
 }
+function audioStart() {
+    var sound = document.getElementById("audio");
+    sound.play();
+    console.log(sound.played);
+}
