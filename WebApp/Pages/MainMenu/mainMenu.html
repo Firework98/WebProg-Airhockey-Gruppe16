@@ -4,11 +4,13 @@
     <link rel="stylesheet" type="text/css" href="mainMenu.css">
     <meta charset="UTF-8">
     <title>Airhockey Main Menu</title>
+    <script src="mainMenu.js"></script>
 </head>
 <body>
-<audio autoplay loop src="../../Ressources/Komiku.mp3"/>
+<audio id="audio" autoplay loop src="../../Ressources/Komiku.mp3"></audio>
 <header style="horiz-align: center">
-<h1>Airhockey</h1>
+    <h1>Airhockey</h1>
+    <button onclick="audioStop()">Mute</button>
 </header>
 <main>
     <div id="Wrapper">
