@@ -4,8 +4,23 @@
     <meta charset="UTF-8">
     <title>Title</title>
     <link rel="stylesheet" type="text/css" href="highscore.css">
+    <script src="highscore.js"></script>
 </head>
 <body>
+<header style="horiz-align: center">
+    <h1>Highscoreboard</h1>
+</header>
+
+    <form>
+        <label for="eingabe">neuen Eintrag schreiben:</label><input id="eingabe" value="" type="text">
+        <button id="speichern">Speichern</button>
+    </form>
+    <br>
+    <p>Klicken Sie auf einen Eintrag, um diesen zu löschen.</p>
+    <br>
+
+    <ol id="eintraege">
+    </ol>
 
 </body>
 </html>

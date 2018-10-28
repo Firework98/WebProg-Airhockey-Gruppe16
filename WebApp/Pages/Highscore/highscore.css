@@ -1,1 +1,61 @@
 @import "../../GlobalStyles/global.css";
+
+html, body {
+    background-color: black;
+    color: white;
+    height: 100%;
+    overflow: hidden;
+}
+
+header {
+    height: 15%;
+    overflow: no-display;
+    border-bottom: 1px solid white;
+}
+
+main {
+    height: 75%;
+}
+
+footer {
+    clear: both;
+    height: 5%;
+}
+
+h1 {
+    font-size: 60px;
+    text-align: center;
+}
+form {
+    width: 15em;
+    float: right;
+}
+input {
+    width: 86%;
+    margin-bottom: 2em;
+}
+
+ol#eintraege {
+    width: 50%;
+    border: 1px solid #a9a9a9;
+    border-radius: 5px;
+    margin-top: 10px;
+    list-style-type: none;
+}
+
+ol#eintraege li {
+    border-bottom: 1px solid #a9a9a9;
+    padding: 10px;
+    color: #c0b2cb;
+    background-image: linear-gradient(#f9f9f9, #e3e3e3);
+}
+
+ol#eintraege li:last-child {
+    border-bottom: none;
+    border-bottom-right-radius: 5px;
+    border-bottom-left-radius: 5px;
+}
+ol#eintraege li:first-child {
+    border-top-right-radius: 5px;
+    border-top-left-radius: 5px;
+}
