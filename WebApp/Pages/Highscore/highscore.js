@@ -4,9 +4,9 @@ function init() {
     button.onclick = eintragHinzufügen;
     var eintraegeArray = leseEinträge();
     for (var i = 0; i < eintraegeArray.length; i++) {
-        var aufgabeNr = eintraegeArray[i];
-        var value = JSON.parse(localStorage[aufgabeNr]);
-        insDOMschreiben(aufgabeNr, value);
+        var plazierungNr = eintraegeArray[i];
+        var value = JSON.parse(localStorage.getItem(plazierungNr));
+        insDOMschreiben(plazierungNr, value);
     }
 }
 function leseEinträge() {
@@ -25,10 +25,10 @@ function eintragHinzufügen() {
     var value = document.getElementById('eingabe').value;
     if(value!='')
     {
-        var plazierung = 'Plazierung_';
+        var plazierung = eintraegeArray.length+1;
         var name = {'value': value};
         localStorage.setItem(plazierung, JSON.stringify(name));
-        eintraegeArray.push(plazierung);
+        eintraegeArray.push(name);
         localStorage.setItem('eintraegeArray', JSON.stringify(eintraegeArray));
         insDOMschreiben(plazierung, name);
         document.getElementById('eingabe').value=' ';
@@ -39,32 +39,32 @@ function eintragHinzufügen() {
     }
 }
 
-function toDoLöschen(e) {
-    var aufgabeNr = e.target.id;
+function eintragLöschen(e) {
+    var plazierungNr = e.target.id;
     var eintraegeArray = leseEinträge();
     if (eintraegeArray) {
         for (var i = 0; i < eintraegeArray.length; i++) {
-            if (aufgabeNr == eintraegeArray[i]) {
+            if (plazierungNr == eintraegeArray[i]) {
                 eintraegeArray.splice(i,1);
             }
         }
-        localStorage.removeItem(aufgabeNr);
+        localStorage.removeItem(plazierungNr);
         localStorage.setItem('eintraegeArray', JSON.stringify(eintraegeArray));
-        ausDOMentfernen(aufgabeNr);
+        ausDOMentfernen(plazierungNr);
     }
 }
 
-function insDOMschreiben(aufgabeNr, ItemObj) {
+function insDOMschreiben(plazierungNr, ItemObj) {
     var eintraege = document.getElementById('eintraege');
     var eintrag = document.createElement('li');
-    eintrag.setAttribute('id', aufgabeNr);
+    eintrag.setAttribute('id', plazierungNr);
     eintrag.innerHTML = ItemObj.value;
     eintraege.appendChild(eintrag);
-    eintrag.onclick = toDoLöschen;
+    eintrag.onclick = eintragLöschen;
 }
 
-function ausDOMentfernen(aufgabeNr) {
-    var eintrag = document.getElementById(aufgabeNr);
+function ausDOMentfernen(plazierungNr) {
+    var eintrag = document.getElementById(plazierungNr);
     eintrag.parentNode.removeChild(eintrag);
 }
 
