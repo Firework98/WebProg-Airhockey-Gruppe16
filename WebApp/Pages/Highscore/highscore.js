@@ -5,8 +5,8 @@ function init() {
     var eintraegeArray = leseEinträge();
     for (var i = 0; i < eintraegeArray.length; i++) {
         var plazierungNr = eintraegeArray[i];
-        var value = JSON.parse(localStorage.getItem(plazierungNr));
-        insDOMschreiben(plazierungNr, value);
+        var value = eintraegeArray[i].Name;
+        insDOMschreiben(eintraegeArray[i], eintraegeArray[i].Name);
     }
 }
 function leseEinträge() {
@@ -23,14 +23,14 @@ function leseEinträge() {
 function eintragHinzufügen() {
     var eintraegeArray = leseEinträge();
     var value = document.getElementById('eingabe').value;
-    if(value!='')
+    var punktzahl = document.getElementById('punktzahl').value;
+    console.log(punktzahl);
+    if(value!='' && punktzahl!='')
     {
-        var plazierung = eintraegeArray.length+1;
-        var name = {'value': value};
-        localStorage.setItem(plazierung, JSON.stringify(name));
-        eintraegeArray.push(name);
+        var eintrag = {'Punktzahl':punktzahl,'Name': value};
+        eintraegeArray.push(eintrag);
         localStorage.setItem('eintraegeArray', JSON.stringify(eintraegeArray));
-        insDOMschreiben(plazierung, name);
+        insDOMschreiben(eintraegeArray[eintraegeArray.length], eintrag.Name);
         document.getElementById('eingabe').value=' ';
     }
     else
@@ -40,25 +40,26 @@ function eintragHinzufügen() {
 }
 
 function eintragLöschen(e) {
-    var plazierungNr = e.target.id;
+    var name = e.target.innerHTML;
+    var id = e.target.id;
     var eintraegeArray = leseEinträge();
     if (eintraegeArray) {
         for (var i = 0; i < eintraegeArray.length; i++) {
-            if (plazierungNr == eintraegeArray[i]) {
+            if (name == eintraegeArray[i].Name) {
                 eintraegeArray.splice(i,1);
             }
         }
-        localStorage.removeItem(plazierungNr);
+        localStorage.removeItem('eintraegeArray');
         localStorage.setItem('eintraegeArray', JSON.stringify(eintraegeArray));
-        ausDOMentfernen(plazierungNr);
+        ausDOMentfernen(id);
     }
 }
 
-function insDOMschreiben(plazierungNr, ItemObj) {
+function insDOMschreiben(plazierungNr, value) {
     var eintraege = document.getElementById('eintraege');
     var eintrag = document.createElement('li');
     eintrag.setAttribute('id', plazierungNr);
-    eintrag.innerHTML = ItemObj.value;
+    eintrag.innerHTML = value;
     eintraege.appendChild(eintrag);
     eintrag.onclick = eintragLöschen;
 }
