@@ -5,6 +5,7 @@
     <title>Game</title>
     <link rel="stylesheet" type="text/css" href="game.css">
     <link rel="stylesheet" type="text/css" href="../../GlobalStyles/navBar.css">
+    <script src="game.js"></script>
 </head>
 <body>
 <h1>Game</h1>
@@ -17,5 +18,9 @@
         <li> <a href="../Credits/credits.html">Credits </a> </li>
     </ul>
 </div>
+<body onload="init();">
+    <div id="wrapper">
+        <canvas id="canv" height="480" width="640"></canvas>
+    </div>
 </body>
 </html>

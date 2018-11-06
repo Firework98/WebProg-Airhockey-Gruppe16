@@ -4,9 +4,9 @@ function init() {
     button.onclick = eintragHinzufügen;
     var eintraegeArray = leseEinträge();
     for (var i = 0; i < eintraegeArray.length; i++) {
-        var aufgabeNr = eintraegeArray[i];
-        var value = JSON.parse(localStorage[aufgabeNr]);
-        insDOMschreiben(aufgabeNr, value);
+        var plazierungNr = eintraegeArray[i];
+        var value = eintraegeArray[i].Name;
+        insDOMschreiben(eintraegeArray[i], eintraegeArray[i].Name);
     }
 }
 function leseEinträge() {
@@ -23,14 +23,14 @@ function leseEinträge() {
 function eintragHinzufügen() {
     var eintraegeArray = leseEinträge();
     var value = document.getElementById('eingabe').value;
-    if(value!='')
+    var punktzahl = document.getElementById('punktzahl').value;
+    console.log(punktzahl);
+    if(value!='' && punktzahl!='')
     {
-        var plazierung = 'Plazierung_';
-        var name = {'value': value};
-        localStorage.setItem(plazierung, JSON.stringify(name));
-        eintraegeArray.push(plazierung);
+        var eintrag = {'Punktzahl':punktzahl,'Name': value};
+        eintraegeArray.push(eintrag);
         localStorage.setItem('eintraegeArray', JSON.stringify(eintraegeArray));
-        insDOMschreiben(plazierung, name);
+        insDOMschreiben(eintraegeArray[eintraegeArray.length], eintrag.Name);
         document.getElementById('eingabe').value=' ';
     }
     else
@@ -39,32 +39,33 @@ function eintragHinzufügen() {
     }
 }
 
-function toDoLöschen(e) {
-    var aufgabeNr = e.target.id;
+function eintragLöschen(e) {
+    var name = e.target.innerHTML;
+    var id = e.target.id;
     var eintraegeArray = leseEinträge();
     if (eintraegeArray) {
         for (var i = 0; i < eintraegeArray.length; i++) {
-            if (aufgabeNr == eintraegeArray[i]) {
+            if (name == eintraegeArray[i].Name) {
                 eintraegeArray.splice(i,1);
             }
         }
-        localStorage.removeItem(aufgabeNr);
+        localStorage.removeItem('eintraegeArray');
         localStorage.setItem('eintraegeArray', JSON.stringify(eintraegeArray));
-        ausDOMentfernen(aufgabeNr);
+        ausDOMentfernen(id);
     }
 }
 
-function insDOMschreiben(aufgabeNr, ItemObj) {
+function insDOMschreiben(plazierungNr, value) {
     var eintraege = document.getElementById('eintraege');
     var eintrag = document.createElement('li');
-    eintrag.setAttribute('id', aufgabeNr);
-    eintrag.innerHTML = ItemObj.value;
+    eintrag.setAttribute('id', plazierungNr);
+    eintrag.innerHTML = value;
     eintraege.appendChild(eintrag);
-    eintrag.onclick = toDoLöschen;
+    eintrag.onclick = eintragLöschen;
 }
 
-function ausDOMentfernen(aufgabeNr) {
-    var eintrag = document.getElementById(aufgabeNr);
+function ausDOMentfernen(plazierungNr) {
+    var eintrag = document.getElementById(plazierungNr);
     eintrag.parentNode.removeChild(eintrag);
 }
 
