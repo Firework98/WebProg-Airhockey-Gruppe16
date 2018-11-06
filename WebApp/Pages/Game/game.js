@@ -7,9 +7,10 @@ let gDsk;
 
 const DECAY = 0.999;
 const REDUCTION = 0.95;
-const WIDTH = 640;
-const HEIGHT = 480;
+const WIDTH = 900;
+const HEIGHT = 1080;
 const StackSize = 3;
+const CAP = 30;
 
 class Vec2D{
     constructor (x,y){
@@ -58,7 +59,7 @@ class Disk{
     }
     checkCollisionWithBorder(){
         if (this.x + this.radius > WIDTH){
-            this.x = 640 - this.radius;
+            this.x = WIDTH - this.radius;
             this.velo.x = -(this.velo.x * REDUCTION)
         }
         if (this.x - this.radius < 0){
@@ -84,6 +85,8 @@ class Disk{
             distDir.normalize();
             let pOldVec = pusher.getLast();
             let pVelo = new Vec2D(pusher.x - pOldVec.x, pusher.y - pOldVec.y);
+            let multFactor = Math.sqrt(pVelo.length()) + this.velo.length();
+            multFactor = (multFactor > CAP ? CAP : multFactor);
             console.error("Pvelo = ("+ pVelo.x + " | " + pVelo.y + ")");
             distDir.multiply(Math.sqrt(pVelo.length()) + this.velo.length());
             this.velo = distDir;
@@ -128,7 +131,7 @@ class Pusher{
 
     checkBorderCollision(newX,newY){
         if (newX + this.radius > WIDTH){
-            newX = 640 - this.radius;
+            newX = WIDTH - this.radius;
         }
         if (newX - this.radius < 0){
             newX = this.radius;
@@ -162,7 +165,7 @@ function init(){
 function draw(){
     console.log("Draw");
     gC.fillStyle = "grey";
-    gC.fillRect(0,0,640,480);
+    gC.fillRect(0,0,WIDTH,HEIGHT);
     gC.fill();
     gDsk.move();
     gDsk.render();
