@@ -27,30 +27,9 @@ h1 {
     text-align: center;
 }
 
-#Wrapper {
-    width: 20%;
-    height: 100%;
-    float: left;
-}
-
 #Img {
     width: 60%;
     height: 100%;
     float: left;
 }
 
-#Button-Array {
-    height: 100%;
-    float: left;
-    width: 90%;
-}
-
-.mainMenu-Button {
-    background-color: black;
-    border-color: white;
-    border-radius: 12px;
-    color: white;
-    margin-top: 10%;
-    height: 10%;
-    width: 100%;
-}
