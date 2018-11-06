@@ -2,6 +2,7 @@
 <html lang="en">
 <head>
     <link rel="stylesheet" type="text/css" href="help.css">
+    <link rel="stylesheet" type="text/css" href="../../GlobalStyles/navBar.css">
     <meta charset="UTF-8">
     <title>Help</title>
 </head>
@@ -9,17 +10,24 @@
 
 
 <h1>Spielzweck</h1>
+
 <p>Air-Hockey ist ein Geschicklichkeitsspiel für zwei Spieler, das vorwiegend in Spielhallen gespielt wird. In den USA und einigen anderen Ländern existieren Sport-Wettbewerbe mit Meisterschaften.</p>
 <h1>Regeln</h1>
-<ul>
-    <li>Sie schlagen den Puck hin und her, bis er in das Tor eines Spielers gelangt.</li>
-    <li>Das Spiel wird fortgesetzt, bis einer der Spieler sieben Punkte erreicht hat</li>
-</ul>
+    <p>Sie schlagen den Puck hin und her, bis er in das Tor eines Spielers gelangt.</p>
+    <p>Das Spiel wird fortgesetzt, bis einer der Spieler sieben Punkte erreicht hat</p>
+
 <h1>Steuerung</h1>
 <p>Gespielt wird mit der Maus. Der Schläger folgt hierbei der Mauszeigerposition.</p>
 
-
-<input type="button" onclick="location.href='/WebProg-Airhockey-Gruppe16/WebApp/Pages/MainMenu/mainMenu.html';" value="Main Menu" />
+<div id="Wrapper">
+    <ul>
+        <li> <a href="../MainMenu/mainMenu.html">Main Menu</a> </li>
+        <li> <a href="../Game/game.html">Game</a> </li>
+        <li> <a class="active" href="../Help/help.html">Help</a> </li>
+        <li> <a href="../Highscore/highscore.html">Highscore</a> </li>
+        <li> <a href="../Credits/credits.html">Credits </a> </li>
+    </ul>
+</div>
 
 </body>
 </html>
