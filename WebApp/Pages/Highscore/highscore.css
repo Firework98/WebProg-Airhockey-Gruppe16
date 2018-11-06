@@ -34,6 +34,11 @@ input {
     width: 86%;
     margin-bottom: 2em;
 }
+#boxfuereintraege{
+    float: left;
+    width: 55%;
+
+}
 
 ol#eintraege {
     width: 50%;

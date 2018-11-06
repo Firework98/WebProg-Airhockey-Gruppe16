@@ -2,6 +2,7 @@
 <html lang="en">
 <head>
     <link rel="stylesheet" type="text/css" href="mainMenu.css">
+    <link rel="stylesheet" type="text/css" href="../../GlobalStyles/navBar.css">
     <meta charset="UTF-8">
     <title>Airhockey Main Menu</title>
     <script src="mainMenu.js"></script>
@@ -14,24 +15,13 @@
 </header>
 <main>
     <div id="Wrapper">
-        <div id="Button-Array">
-            <input class="mainMenu-Button" type="button"
-                   onclick="location.href='../Game/game.html';"
-                   value="Play"/>
-
-            <input class="mainMenu-Button" type="button"
-                   onclick="location.href='../Help/help.html';"
-                   value="Help"/>
-
-            <input class="mainMenu-Button" type="button"
-                   onclick="location.href='../Highscore/highscore.html';"
-                   value="Highscore"/>
-
-            <input class="mainMenu-Button" type="button"
-                   onclick="location.href='../Credits/credits.html';"
-                   value="Credits"/>
-
-        </div>
+    <ul>
+        <li> <a class="active" href="../MainMenu/mainMenu.html">Main Menu</a> </li>
+        <li> <a href="../Game/game.html">Game</a> </li>
+        <li> <a href="../Help/help.html">Help</a> </li>
+        <li> <a href="../Highscore/highscore.html">Highscore</a> </li>
+        <li> <a href="../Credits/credits.html">Credits </a> </li>
+    </ul>
     </div>
     <div id="Img">
         <img src="../../img/airhockey.gif" width="100%" height="100%">

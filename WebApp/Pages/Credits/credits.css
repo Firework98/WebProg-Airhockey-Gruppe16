@@ -1,1 +1,7 @@
 @import "../../GlobalStyles/global.css";
+html, body {
+    background-color: black;
+    color: white;
+    height: 100%;
+    overflow: hidden;
+}
