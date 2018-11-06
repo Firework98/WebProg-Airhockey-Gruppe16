@@ -27,34 +27,29 @@ function addEntry() {
                 if (parseInt(punktzahl) >= parseInt(eintraegeArray[i].Punktzahl)) {
                     eintraegeArray.splice(i, 0, eintrag);
                     break;
+                } else if ((i) === eintraegeArray.length-1) {
+                    console.log("Input");
+                    eintraegeArray.push(eintrag);
                 }
             }
-        }else{
+        } else {
             eintraegeArray.push(eintrag);
         }
         localStorage.setItem('eintraegeArray', JSON.stringify(eintraegeArray));
         writeIntoDOM(i, eintrag.Name);
-        document.getElementById('eingabe').value = ' ';
-        document.getElementById('punktzahl').value = ' ';
     } else {
         alert('Bitte geben Sie etwas ein!');
     }
 }
 
 function deleteScoreEntry(entry) {
-    const name = entry.target.innerHTML;
     const id = entry.target.id;
     let eintraegeArray = getLocalHighscore();
     if (eintraegeArray) {
-        for (let i = 0; i < eintraegeArray.length; i++) {
-            if (name === eintraegeArray[i].Name) {
-                eintraegeArray.splice(i, 1);
-            }
-        }
-        localStorage.removeItem('eintraegeArray');
-        localStorage.setItem('eintraegeArray', JSON.stringify(eintraegeArray));
-        deleteOutOfDOM(id);
+        eintraegeArray.splice(id, 1);
     }
+    localStorage.setItem('eintraegeArray', JSON.stringify(eintraegeArray));
+    deleteOutOfDOM(id);
 }
 
 function writeIntoDOM(id, ItemObj) {
