@@ -1,72 +1,67 @@
 window.onload = init;
+
 function init() {
-    var button = document.getElementById('speichern');
-    button.onclick = eintragHinzufügen;
-    var eintraegeArray = leseEinträge();
-    for (var i = 0; i < eintraegeArray.length; i++) {
-        var plazierungNr = eintraegeArray[i];
-        var value = eintraegeArray[i].Name;
-        insDOMschreiben(eintraegeArray[i], eintraegeArray[i].Name);
-    }
-}
-function leseEinträge() {
-    var eintraegeArray = localStorage.getItem('eintraegeArray');
-    if (!eintraegeArray) {
-        eintraegeArray = [];
-        localStorage.setItem('eintraegeArray', JSON.stringify(eintraegeArray));
-    } else {
-        eintraegeArray = JSON.parse(eintraegeArray);
-    }
-    return eintraegeArray;
-}
-
-function eintragHinzufügen() {
-    var eintraegeArray = leseEinträge();
-    var value = document.getElementById('eingabe').value;
-    var punktzahl = document.getElementById('punktzahl').value;
-    console.log(punktzahl);
-    if(value!='' && punktzahl!='')
-    {
-        var eintrag = {'Punktzahl':punktzahl,'Name': value};
-        eintraegeArray.push(eintrag);
-        localStorage.setItem('eintraegeArray', JSON.stringify(eintraegeArray));
-        insDOMschreiben(eintraegeArray[eintraegeArray.length], eintrag.Name);
-        document.getElementById('eingabe').value=' ';
-    }
-    else
-    {
-        alert('Bitte geben Sie etwas ein!');
+    const button = document.getElementById('save');
+    button.onclick = addEntry;
+    const localHighscoreArr = getLocalHighscore();
+    for (let i = 0; i < localHighscoreArr.length; i++) {
+        writeIntoDOM(i, localHighscoreArr[i]);
     }
 }
 
-function eintragLöschen(e) {
-    var name = e.target.innerHTML;
-    var id = e.target.id;
-    var eintraegeArray = leseEinträge();
-    if (eintraegeArray) {
-        for (var i = 0; i < eintraegeArray.length; i++) {
-            if (name == eintraegeArray[i].Name) {
-                eintraegeArray.splice(i,1);
+function getLocalHighscore() {
+    let localHighscoreArr = localStorage.getItem('localHighscore');
+    localHighscoreArr = localHighscoreArr ? JSON.parse(localHighscoreArr) : [];
+    return localHighscoreArr;
+}
+
+function addEntry() {
+    let localHighscoreArr = getLocalHighscore();
+    const username = document.getElementById('inputName').value;
+    const score = document.getElementById('inputScore').value;
+    if (username !== '' && score !== '') {
+        const newEntry = {'Score': score, 'Username': username};
+        let i;
+        if (localHighscoreArr.length !== 0) {
+            for (i = 0; i < localHighscoreArr.length; i++) {
+                if (parseInt(score) >= parseInt(localHighscoreArr[i].Score)) {
+                    localHighscoreArr.splice(i, 0, newEntry);
+                    break;
+                } else if ((i) === localHighscoreArr.length-1) {
+                    localHighscoreArr.push(newEntry);
+                    break;
+                }
             }
+        } else {
+            localHighscoreArr.push(newEntry);
         }
-        localStorage.removeItem('eintraegeArray');
-        localStorage.setItem('eintraegeArray', JSON.stringify(eintraegeArray));
-        ausDOMentfernen(id);
+        localStorage.setItem('localHighscore', JSON.stringify(localHighscoreArr));
+        writeIntoDOM(i, newEntry);
+    } else {
+        alert('Please insert!');
     }
 }
 
-function insDOMschreiben(plazierungNr, value) {
-    var eintraege = document.getElementById('eintraege');
-    var eintrag = document.createElement('li');
-    eintrag.setAttribute('id', plazierungNr);
-    eintrag.innerHTML = value;
-    eintraege.appendChild(eintrag);
-    eintrag.onclick = eintragLöschen;
+function deleteScoreEntry(entry) {
+    const id = entry.target.id;
+    let localHighscoreArr = getLocalHighscore();
+    if (localHighscoreArr) {
+        localHighscoreArr.splice(id, 1);
+    }
+    localStorage.setItem('localHighscore', JSON.stringify(localHighscoreArr));
+    deleteOutOfDOM(id);
 }
 
-function ausDOMentfernen(plazierungNr) {
-    var eintrag = document.getElementById(plazierungNr);
-    eintrag.parentNode.removeChild(eintrag);
+function writeIntoDOM(id, ItemObj) {
+    let htmlEntries = document.getElementById('entries');
+    let newHtmlEntry = document.createElement('li');
+    newHtmlEntry.setAttribute('id', id);
+    newHtmlEntry.innerHTML = "" + ItemObj.Username + " : " + ItemObj.Score;
+    htmlEntries.appendChild(newHtmlEntry);
+    newHtmlEntry.onclick = deleteScoreEntry;
 }
 
-
+function deleteOutOfDOM(id) {
+    let htmlListEntry = document.getElementById(id);
+    htmlListEntry.parentNode.removeChild(htmlListEntry);
+}

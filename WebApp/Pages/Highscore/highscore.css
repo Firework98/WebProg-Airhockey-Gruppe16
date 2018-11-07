@@ -34,33 +34,29 @@ input {
     width: 86%;
     margin-bottom: 2em;
 }
-#boxfuereintraege{
+#warpperEntries{
     float: left;
     width: 55%;
-
 }
-
-ol#eintraege {
+ol#entries {
     width: 50%;
     border: 1px solid #a9a9a9;
     border-radius: 5px;
     margin-top: 10px;
     list-style-type: none;
 }
-
-ol#eintraege li {
+ol#entries li {
     border-bottom: 1px solid #a9a9a9;
     padding: 10px;
     color: #c0b2cb;
     background-image: linear-gradient(#f9f9f9, #e3e3e3);
 }
-
-ol#eintraege li:last-child {
+ol#entries li:last-child {
     border-bottom: none;
     border-bottom-right-radius: 5px;
     border-bottom-left-radius: 5px;
 }
-ol#eintraege li:first-child {
+ol#entries li:first-child {
     border-top-right-radius: 5px;
     border-top-left-radius: 5px;
 }

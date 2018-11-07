@@ -7,7 +7,7 @@
     <link rel="stylesheet" type="text/css" href="../../GlobalStyles/navBar.css">
     <script src="game.js"></script>
 </head>
-<body>
+<body onload="init();">
 <h1>Game</h1>
 <div id="Wrapper">
     <ul>
@@ -18,9 +18,8 @@
         <li> <a href="../Credits/credits.html">Credits </a> </li>
     </ul>
 </div>
-<body onload="init();">
-    <div id="wrapper">
-        <canvas id="canv" height="480" width="640"></canvas>
+    <div id="gameWrapper">
+        <canvas id="canv" height="1080" width="900"></canvas>
     </div>
 </body>
 </html>
