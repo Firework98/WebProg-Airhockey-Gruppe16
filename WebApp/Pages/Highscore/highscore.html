@@ -20,20 +20,25 @@
         <li> <a href="../Credits/credits.html">Credits </a> </li>
     </ul>
 </div>
+<div id="formWrapper">
     <form>
-        <label for="eingabe">neuen Eintrag schreiben:</label>
-        <input id="eingabe" value="" type="text">
-        <input id="punktzahl" value="" type="number">
-        <button id="save">Speichern</button>
+        <label for="inputName">Username:</label>
+        <input id="inputName" value="" type="text">
+
+        <label for="inputScore">Score:</label>
+        <input id="inputScore" value="" type="number">
+
+        <button id="save">Save</button>
     </form>
     <br>
-    <p>Klicken Sie auf einen Eintrag, um diesen zu löschen.</p>
+    <p>Click on an Entry to delete.</p>
     <br>
+</div>
 
-    <div id="boxfuereintraege">
-        <ol id="eintraege">
-        </ol>
-    </div>
+<div id="warpperEntries">
+    <ol id="entries">
+    </ol>
+</div>
 
 </body>
 </html>

@@ -1,7 +1,28 @@
 @import "../../GlobalStyles/global.css";
 html, body {
-    background-color: black;
-    color: white;
+    background-color: lightgrey;
+    color: black;
     height: 100%;
     overflow: hidden;
 }
+h1{
+    text-align: center;
+}
+table, td, th {
+    border: 1px solid black;
+}
+table{
+    width: 50%;
+}
+th{
+    background-color: #414141;
+    color: whitesmoke;
+
+}
+td{
+    text-align: left;
+    font-size: 125%;
+    padding: 5%;
+}
+tr:nth-child(even) {background-color: whitesmoke;}
+
