@@ -10,38 +10,41 @@
 </head>
 <body>
 <audio id="audio" autoplay loop src="../../Ressources/Komiku.mp3"></audio>
-<header>
-    <h1>Highscoreboard</h1>
-    <button id="mute" onclick="audioStop()">&#9835;</button>
-</header>
-<div id="listWrapper">
-    <ul>
-        <li> <a href="../MainMenu/mainMenu.html">Main Menu</a> </li>
-        <li> <a href="../Game/game.html">Game</a> </li>
-        <li> <a href="../Help/help.html">Help</a> </li>
-        <li> <a class="active" href="../Highscore/highscore.html">Highscore</a> </li>
-        <li> <a href="../Credits/credits.html">Credits </a> </li>
-    </ul>
+<div id="Wrapper">
+        <h1>Highscoreboard</h1>
+    <div id="line">
+        <hr>
+    </div>
+        <button id="mute" onclick="audioStop()">&#9835;</button>
+
+    <div id="listWrapper">
+        <ul>
+            <li> <a href="../MainMenu/mainMenu.html">Main Menu</a> </li>
+            <li> <a href="../Game/game.html">Game</a> </li>
+            <li> <a href="../Help/help.html">Help</a> </li>
+            <li> <a class="active" href="../Highscore/highscore.html">Highscore</a> </li>
+            <li> <a href="../Credits/credits.html">Credits </a> </li>
+        </ul>
+    </div>
+    <div id="formWrapper">
+        <form>
+            <label for="inputName">Username:</label>
+            <input id="inputName" value="" type="text">
+
+            <label for="inputScore">Score:</label>
+            <input id="inputScore" value="" type="number">
+
+            <button id="save">Save</button>
+        </form>
+        <br>
+        <p>Click on an Entry to delete.</p>
+        <br>
+    </div>
+
+    <div id="warpperEntries">
+        <ol id="entries">
+        </ol>
+    </div>
 </div>
-<div id="formWrapper">
-    <form>
-        <label for="inputName">Username:</label>
-        <input id="inputName" value="" type="text">
-
-        <label for="inputScore">Score:</label>
-        <input id="inputScore" value="" type="number">
-
-        <button id="save">Save</button>
-    </form>
-    <br>
-    <p>Click on an Entry to delete.</p>
-    <br>
-</div>
-
-<div id="warpperEntries">
-    <ol id="entries">
-    </ol>
-</div>
-
 </body>
 </html>
