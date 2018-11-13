@@ -9,6 +9,7 @@ hr{
     border: solid black 1px;
 }
 h1{
+    font-size: 60px;
     text-align: center;
 }
 table, td, th {
