@@ -1,14 +1,14 @@
 let canv;
 let gC;
-let pX;
-let pY;
 let pPush;
 let gDsk;
+let xOffSet;
+let yOffSet;
 
-const DECAY = 0.999;
-const REDUCTION = 0.95;
-const WIDTH = 900;
-const HEIGHT = 1080;
+const DECAY = 0.997;
+const REDUCTION = 0.92;
+const WIDTH = 480;
+const HEIGHT = 640;
 const StackSize = 3;
 const CAP = 30;
 
@@ -88,7 +88,7 @@ class Disk{
             let multFactor = Math.sqrt(pVelo.length()) + this.velo.length();
             multFactor = (multFactor > CAP ? CAP : multFactor);
             console.error("Pvelo = ("+ pVelo.x + " | " + pVelo.y + ")");
-            distDir.multiply(Math.sqrt(pVelo.length()) + this.velo.length());
+            distDir.multiply(multFactor);
             this.velo = distDir;
         } else{
             this.col = "red";
@@ -147,17 +147,21 @@ class Pusher{
 }
 function init(){
     canv = document.getElementById("canv");
+    canv.style.cursor = "none";
     if(canv != null){
         gC = canv.getContext("2d");
     }
+    let bRect = canv.getBoundingClientRect();
+    xOffSet = bRect.left;
+    yOffSet = bRect.top;
     let psh = new Pusher(40,50,40);
     let dsk = new Disk(20,40,50);
     pPush = psh;
     gDsk = dsk;
     window.requestAnimationFrame(draw);
     document.addEventListener("mousemove",function (e){
-        let x = e.pageX;
-        let y = e.pageY;
+        let x = e.pageX - xOffSet;
+        let y = e.pageY - yOffSet;
         pPush.moveTo(x,y);
         console.log("x " + x + "y " + y);
     })
