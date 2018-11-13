@@ -11,8 +11,11 @@ h1{
 table, td, th {
     border: 1px solid black;
 }
+th, td {
+    padding: 15px;
+}
 table{
-    width: 50%;
+    width: 100%;
 }
 th{
     background-color: #414141;
@@ -22,10 +25,16 @@ th{
 td{
     text-align: left;
     font-size: 125%;
-    padding: 5%;
 }
 tr:nth-child(even) {background-color: whitesmoke;}
 
+#Wrapper{
+
+}
 #Table{
+    float: left;
+    margin-left: 5%;
+    margin-top: 5%;
+    width: 50%;
 }
 
