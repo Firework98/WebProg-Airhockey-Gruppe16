@@ -1,3 +1,4 @@
+"use strict";
 let canv;
 let gC;
 let pPush;
