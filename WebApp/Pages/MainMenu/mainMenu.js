@@ -1,3 +1,4 @@
+"use strict";
 function audioStop() {
     const sound = document.getElementById("audio");
 
