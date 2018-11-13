@@ -1,8 +1,8 @@
 @import "../../GlobalStyles/global.css";
 
 html, body {
-    background-color: black;
-    color: white;
+    background-color: lightgrey;
+    color: black;
     height: 100%;
     overflow: hidden;
 }
