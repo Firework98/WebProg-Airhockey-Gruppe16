@@ -37,8 +37,15 @@ input {
     width: 86%;
     margin-bottom: 2em;
 }
+#formWrapper{
+    float: left;
+    padding-left: 5%;
+    padding-top: 5%;
+}
 #warpperEntries{
     float: left;
+    padding-left: 5%;
+    padding-top: 5%;
     width: 55%;
 }
 ol#entries {
@@ -51,7 +58,7 @@ ol#entries {
 ol#entries li {
     border-bottom: 1px solid #a9a9a9;
     padding: 10px;
-    color: #c0b2cb;
+    color: palevioletred;
     background-image: linear-gradient(#f9f9f9, #e3e3e3);
 }
 ol#entries li:last-child {
