@@ -26,10 +26,15 @@ h1 {
     font-size: 60px;
     text-align: center;
 }
+hr {
+    border: solid black 1px;
+}
 
 #Img {
     width: 60%;
     height: 100%;
     float: left;
+    margin-top: 5%;
+    margin-left: 5%;
 }
 
