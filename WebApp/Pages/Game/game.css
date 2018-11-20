@@ -1,14 +1,39 @@
 @import "../../GlobalStyles/global.css";
 html, body {
+    cursor: none;
     background-color: black;
     color: white;
     height: 100%;
     overflow: hidden;
 }
-#gameWrapper{
-
+#listWrapper{
+    cursor: pointer;
 }
-#canv {
+
+#scoreWrapper{
+    float: left;
+    width: 10%;
+    height: 100%;
+}
+.score{
+    width: 100%;
+    float: top;
+    font-size: 50px;
+}
+header{
+    height: 10%;
+}
+#Wrapper{
+    width: 100%;
+    height: 90%;
+}
+#gameWrapper{
+    float: left;
+    width: 480px;
+    height: 640px;
+    margin-left: 100px;
+}
+#canv{
     width: 480px;
     height: 640px;
     float: left;

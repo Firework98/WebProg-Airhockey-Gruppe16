@@ -5,6 +5,8 @@ let pPush;
 let gDsk;
 let xOffSet;
 let yOffSet;
+let g1;
+let g2;
 
 const DECAY = 0.997;
 const REDUCTION = 0.92;
@@ -59,27 +61,40 @@ class Disk{
         this.checkCollisionWithPusher(pPush);
     }
     checkCollisionWithBorder(){
-        if (this.x + this.radius > WIDTH){
-            this.x = WIDTH - this.radius;
-            this.velo.x = -(this.velo.x * REDUCTION)
-        }
-        if (this.x - this.radius < 0){
-            this.x = this.radius;
-            this.velo.x = -(this.velo.x * REDUCTION)
+        var checkGoals = false;
+        if(this.y + this.radius <= HEIGHT && this.y - this.radius >= 0){
+            checkGoals = false;
         }
         if (this.y + this.radius > HEIGHT){
             this.y = HEIGHT - this.radius;
             this.velo.y = -(this.velo.y * REDUCTION)
+            checkGoals = true;
         }
         if (this.y - this.radius < 0){
             this.y = 0 + this.radius;
             this.velo.y = -(this.velo.y * REDUCTION)
+            checkGoals = true;
         }
-        console.log("Velo =" + this.velo);
+        if(checkGoals && (this.isInGoalSpace(g1) || this.isInGoalSpace(g2))){
+            console.log("In Goal")
+        } else{
+            if (this.x + this.radius > WIDTH){
+                this.x = WIDTH - this.radius;
+                this.velo.x = -(this.velo.x * REDUCTION)
+            }
+            if (this.x - this.radius < 0){
+                this.x = this.radius;
+                this.velo.x = -(this.velo.x * REDUCTION)
+            }
+        }
+        //console.log("Velo =" + this.velo);
+    }
+    isInGoalSpace(goal){
+        return this.x > goal.xLeft && this.x < goal.xRight;
     }
     checkCollisionWithPusher(pusher){
         let distVec = new Vec2D(this.x-pusher.x,this.y-pusher.y);
-        console.log("Dist"+distVec.x + " | " + distVec.y);
+        //console.log("Dist"+distVec.x + " | " + distVec.y);
         if (distVec.length() < pusher.radius + this.radius){
             this.col = "blue";
             let distDir = distVec.clone();
@@ -95,6 +110,29 @@ class Disk{
             this.col = "red";
         }
     }
+}
+class Player{
+    constructor(name,pusher){
+        this.pusher = pusher;
+        this.name = name;
+    }
+}
+
+class Goal{
+    constructor(player,xLeft,xRight,y){
+        this.player = player;
+        this.xLeft = xLeft;
+        this.xRight = xRight;
+        this.y = y;
+    }
+    render(){
+        console.log("Drawing" + this.y + this.xLeft + this.xRight);
+        gC.beginPath();
+        gC.moveTo(0,0);
+        gC.lineTo(300,150);
+        gC.stroke();
+    }
+
 }
 class Pusher{
     constructor (radius,x,y){
@@ -113,7 +151,7 @@ class Pusher{
 
     render(){
         gC.fillStyle = "black";
-        console.log(""+ this.x + "  " + this.y + " " + this.radius);
+        //console.log(""+ this.x + "  " + this.y + " " + this.radius);
         gC.beginPath();
         gC.arc(this.x,this.y,this.radius,0, 2* Math.PI);
         gC.fill();
@@ -146,6 +184,7 @@ class Pusher{
         return new Vec2D(newX,newY);
     }
 }
+
 function init(){
     canv = document.getElementById("canv");
     canv.style.cursor = "none";
@@ -157,6 +196,9 @@ function init(){
     yOffSet = bRect.top;
     let psh = new Pusher(40,50,40);
     let dsk = new Disk(20,40,50);
+    let p1 = new Player("Spieler1",psh);
+    g1 = new Goal(p1,200,300,0);
+    g2 = new Goal(p1,200,300,HEIGHT);
     pPush = psh;
     gDsk = dsk;
     window.requestAnimationFrame(draw);
@@ -164,11 +206,11 @@ function init(){
         let x = e.pageX - xOffSet;
         let y = e.pageY - yOffSet;
         pPush.moveTo(x,y);
-        console.log("x " + x + "y " + y);
+        //console.log("x " + x + "y " + y);
     })
 }
 function draw(){
-    console.log("Draw");
+    //console.log("Draw");
     gC.fillStyle = "grey";
     gC.fillRect(0,0,WIDTH,HEIGHT);
     gC.fill();
@@ -176,4 +218,6 @@ function draw(){
     gDsk.render();
     pPush.render();
     window.requestAnimationFrame(draw);
+    g1.render();
+    g2.render();
 }

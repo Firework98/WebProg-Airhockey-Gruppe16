@@ -8,7 +8,9 @@
     <script src="game.js"></script>
 </head>
 <body onload="init();">
-<h1>Game</h1>
+<header>
+    <h1>Game</h1>
+</header>
 <div id="Wrapper">
     <div id="listWrapper">
         <ul>
@@ -21,6 +23,15 @@
     </div>
     <div id="gameWrapper">
         <canvas id="canv" height="640" width="480"></canvas>
+    </div>
+    <div id="scoreWrapper">
+        <div class="score" id="playerScore">
+            0
+        </div>
+
+        <div class="score" id="computerScore">
+            0
+        </div>
     </div>
 </div>
 </body>
