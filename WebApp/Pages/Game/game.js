@@ -5,15 +5,17 @@ let pPush;
 let gDsk;
 let xOffSet;
 let yOffSet;
-let g1;
-let g2;
+let computer;
+let player;
+let computerGoal;
+let playerGoal;
 
 const DECAY = 0.997;
 const REDUCTION = 0.92;
 const WIDTH = 480;
 const HEIGHT = 640;
 const StackSize = 3;
-const CAP = 30;
+const CAP = 20;
 
 class Vec2D{
     constructor (x,y){
@@ -61,21 +63,34 @@ class Disk{
         this.checkCollisionWithPusher(pPush);
     }
     checkCollisionWithBorder(){
-        var checkGoals = false;
+        let checkGoals = false;
         if(this.y + this.radius <= HEIGHT && this.y - this.radius >= 0){
             checkGoals = false;
         }
         if (this.y + this.radius > HEIGHT){
             this.y = HEIGHT - this.radius;
-            this.velo.y = -(this.velo.y * REDUCTION)
+            this.velo.y = -(this.velo.y * REDUCTION);
             checkGoals = true;
         }
         if (this.y - this.radius < 0){
             this.y = 0 + this.radius;
-            this.velo.y = -(this.velo.y * REDUCTION)
+            this.velo.y = -(this.velo.y * REDUCTION);
             checkGoals = true;
         }
-        if(checkGoals && (this.isInGoalSpace(g1) || this.isInGoalSpace(g2))){
+        if(checkGoals && (this.isInGoalSpace(computerGoal) || this.isInGoalSpace(playerGoal))){
+            let distToCGoal = Math.abs(computerGoal.y-this.y);
+            let distToPGoal = Math.abs(playerGoal.y-this.y);
+            if (distToCGoal <= this.radius && this.isInGoalSpace(computerGoal)){
+                computerGoal.player.points++;
+            } else{
+                if (distToPGoal <= this.radius && this.isInGoalSpace(playerGoal)){
+                    playerGoal.player.points++;
+                }
+            }
+            document.getElementById("playerScore").innerText = player.points;
+            document.getElementById("computerScore").innerText = computer.points;
+
+
             console.log("In Goal")
         } else{
             if (this.x + this.radius > WIDTH){
@@ -101,7 +116,7 @@ class Disk{
             distDir.normalize();
             let pOldVec = pusher.getLast();
             let pVelo = new Vec2D(pusher.x - pOldVec.x, pusher.y - pOldVec.y);
-            let multFactor = Math.sqrt(pVelo.length()) + this.velo.length();
+            let multFactor = pVelo.length() + this.velo.length();
             multFactor = (multFactor > CAP ? CAP : multFactor);
             console.error("Pvelo = ("+ pVelo.x + " | " + pVelo.y + ")");
             distDir.multiply(multFactor);
@@ -115,6 +130,11 @@ class Player{
     constructor(name,pusher){
         this.pusher = pusher;
         this.name = name;
+        this.points = 0;
+    }
+    setGoal(goal)
+    {
+        this.goal = goal;
     }
 }
 
@@ -126,10 +146,11 @@ class Goal{
         this.y = y;
     }
     render(){
-        console.log("Drawing" + this.y + this.xLeft + this.xRight);
         gC.beginPath();
-        gC.moveTo(0,0);
-        gC.lineTo(300,150);
+        gC.strokeStyle="red";
+        gC.lineWidth = 10;
+        gC.moveTo(this.xLeft, this.y);
+        gC.lineTo(this.xRight, this.y);
         gC.stroke();
     }
 
@@ -195,10 +216,15 @@ function init(){
     xOffSet = bRect.left;
     yOffSet = bRect.top;
     let psh = new Pusher(40,50,40);
-    let dsk = new Disk(20,40,50);
-    let p1 = new Player("Spieler1",psh);
-    g1 = new Goal(p1,200,300,0);
-    g2 = new Goal(p1,200,300,HEIGHT);
+    let dsk = new Disk(30,40,50);
+    let third =  WIDTH / 3;
+
+    player = new Player("Player 1", psh);
+    computer = new Player("Computer", null);
+    computerGoal = new Goal(player,third,third * 2,HEIGHT);
+    playerGoal = new Goal(computer,third ,third *2,0);
+    player.setGoal(playerGoal);
+    computer.setGoal(computerGoal);
     pPush = psh;
     gDsk = dsk;
     window.requestAnimationFrame(draw);
@@ -218,6 +244,6 @@ function draw(){
     gDsk.render();
     pPush.render();
     window.requestAnimationFrame(draw);
-    g1.render();
-    g2.render();
+    playerGoal.render();
+    computerGoal.render();
 }
