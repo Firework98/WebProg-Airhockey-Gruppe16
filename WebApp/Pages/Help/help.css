@@ -5,12 +5,12 @@ html, body {
     height: 100%;
     overflow: hidden;
 }
-h1{
-    text-align: center;
-    font-size: 60px;
-}
 h2{
     color: orangered;
+    font-family: "Andale Mono";
+}
+p{
+    font-family: Optima;
 }
 hr{
     border: solid black 1px;
