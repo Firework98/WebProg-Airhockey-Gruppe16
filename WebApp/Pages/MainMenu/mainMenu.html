@@ -5,14 +5,15 @@
     <link rel="stylesheet" type="text/css" href="../../GlobalStyles/navBar.css">
     <meta charset="UTF-8">
     <title>Airhockey Main Menu</title>
-    <script src="mainMenu.js"></script>
+    <script src="../../GlobalScript/global.js"></script>
 </head>
 <body>
 <audio id="audio" autoplay loop src="../../Ressources/Komiku.mp3"></audio>
-<header>
     <h1>Airhockey</h1>
-    <button onclick="audioStop()">Mute</button>
-</header>
+    <div id="linie">
+        <hr>
+    </div>
+    <button id="mute" onclick="audioStop()">&#9835;</button>
 <main>
     <div id="listWrapper">
     <ul>
