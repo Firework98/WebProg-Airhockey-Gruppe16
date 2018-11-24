@@ -1,12 +1,12 @@
 @import "../../GlobalStyles/global.css";
 html, body {
-    background-color: lightgrey;
+    background-color:  #fcae73;
     color: black;
     height: 100%;
     overflow: hidden;
 }
 h2{
-    color: orangered;
+    color: indianred;
     font-family: "Andale Mono";
 }
 p{

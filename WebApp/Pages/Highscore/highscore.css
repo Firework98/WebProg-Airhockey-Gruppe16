@@ -1,7 +1,7 @@
 @import "../../GlobalStyles/global.css";
 
 html, body {
-    background-color: lightgrey;
+    background-color: #fcae73;
     color: black;
     height: 100%;
     overflow: hidden;
@@ -47,7 +47,7 @@ input {
     width: 55%;
 }
 #inputName{
-    font-family: "Comic Sans MS";
+    font-family: "Arial";
 
 }
 #save{
