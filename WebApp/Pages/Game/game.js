@@ -11,7 +11,7 @@ let computerGoal;
 let playerGoal;
 let newX;
 let newY;
-let gameRunning = true;
+let gameRunning;
 
 const DECAY = 0.995;
 const REDUCTION = 0.92;
@@ -119,20 +119,19 @@ class Disk{
     }
     checkCollisionWithPusher(pusher){
         let distVec = new Vec2D(this.x-pusher.x,this.y-pusher.y);
-        if (distVec.length() < pusher.radius + this.radius + EPSILONCOLL){
-            this.col = "blue";
-            let distDir = distVec.clone();
-            distDir.normalize();
-            let pOldVec = pusher.getLast();
-            let pVelo = new Vec2D(pusher.x - pOldVec.x, pusher.y - pOldVec.y);
-            let multFactor = Math.sqrt(pVelo.length() * pVelo.length() + this.velo.length() * this.velo.length())*0.96;
-            multFactor = (multFactor > CAP ? CAP : multFactor);
-            //console.error("Pvelo = (" + pVelo.x + " | " + pVelo.y + ")");
-            distDir.multiply(multFactor);
-            this.velo = distDir;
-        } else {
-            this.col = "black";
-        }
+        return distVec.length() < pusher.radius + this.radius + EPSILONCOLL;
+    }
+    computeCollisionWithPusher(pusher){
+        let distVec = new Vec2D(this.x-pusher.x,this.y-pusher.y);
+        let distDir = distVec.clone();
+        distDir.normalize();
+        let pOldVec = pusher.getLast();
+        let pVelo = new Vec2D(this.x-pusher.x, this.y-pusher.y);
+        let multFactor = Math.sqrt(pVelo.length() * pVelo.length() + this.velo.length() * this.velo.length())*0.96;
+        multFactor = (multFactor > CAP ? CAP : multFactor);
+        console.error("Pvelo = (" + pVelo.x + " | " + pVelo.y + ")");
+        distDir.multiply(multFactor);
+        this.velo = distDir;
     }
 }
 class Player{
@@ -200,10 +199,12 @@ class Pusher{
         for (let i = 0; i <= steps && !boundaryColl; i++) {
             let intermediatePos = oldPos.clone().add(moveVect.clone().normalize().multiply(steplength * i));
             if (this.checkBorderCollision(intermediatePos.x,intermediatePos.y)){
-                intermediatePos = this.computeBorderCollision(intermediatePos.x,intermediatePos.y);
+                newPos = this.computeBorderCollision(intermediatePos.x,intermediatePos.y);
             }
             //this.setPos(intermediatePos.x, intermediatePos.y);
-            gDsk.checkCollisionWithPusher(this);
+            if (gDsk.checkCollisionWithPusher(this)){
+                gDsk.computeCollisionWithPusher(this);
+            }
         }
         this.setPos(newPos.x, newPos.y);
     }
@@ -291,28 +292,25 @@ function drawGameLines() {
     gC.setLineDash([4, 15]);
     gC.arc(240, 0, 75,-0.035*Math.PI, Math.PI *1);
     gC.stroke();
-
     gC.beginPath();
     gC.arc(240, HEIGHT, 75,Math.PI *1*0.4, Math.PI*2);
     gC.stroke();
-
     gC.beginPath();
     gC.moveTo(0,HEIGHT/2);
     gC.lineTo(WIDTH, HEIGHT/2);
     gC.stroke();
-
-    gC.setLineDash([]);
+    gC.setLineDash([0]);
 }
 function draw() {
     //console.log("Draw");
     drawGameLines();
     pPush.moveTo(newX,newY);
-    pPush.render();
     gDsk.move();
     gDsk.render();
-    playerGoal.render();
-    computerGoal.render();
+    pPush.render();
     if (gameRunning) {
         window.requestAnimationFrame(draw);
     }
+    playerGoal.render();
+    computerGoal.render();
 }
