@@ -60,7 +60,7 @@ class Disk{
         this.x = x;
         this.y = y;
         this.velo = new Vec2D(5,5);
-        this.col = "red";
+        this.col = "black";
     }
     render(){
         gC.fillStyle = this.col;
@@ -161,7 +161,7 @@ class Goal{
     }
     render(){
         gC.beginPath();
-        gC.strokeStyle = "#880000";
+        gC.strokeStyle = "#688488";
         gC.lineWidth = 10;
         gC.moveTo(this.xLeft, this.y);
         gC.lineTo(this.xRight, this.y);
@@ -188,7 +188,7 @@ class Pusher{
     }
 
     render() {
-        gC.fillStyle = "#ff0000";
+        gC.fillStyle = this.color;
         //console.log(""+ this.x + "  " + this.y + " " + this.radius);
         gC.beginPath();
         gC.arc(this.x,this.y,this.radius,0, 2* Math.PI);
