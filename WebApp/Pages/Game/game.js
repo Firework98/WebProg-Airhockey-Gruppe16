@@ -133,7 +133,7 @@ class Disk {
             distDir.multiply(multFactor);
             this.velo = distDir;
         } else {
-            this.col = "red";
+            this.col = "black";
         }
     }
 }
@@ -160,7 +160,7 @@ class Goal {
 
     render() {
         gC.beginPath();
-        gC.strokeStyle = "red";
+        gC.strokeStyle = "#880000";
         gC.lineWidth = 10;
         gC.moveTo(this.xLeft, this.y);
         gC.lineTo(this.xRight, this.y);
@@ -186,7 +186,7 @@ class Pusher {
     }
 
     render() {
-        gC.fillStyle = "black";
+        gC.fillStyle = "#ff0000";
         //console.log(""+ this.x + "  " + this.y + " " + this.radius);
         gC.beginPath();
         gC.arc(this.x, this.y, this.radius, 0, 2 * Math.PI);
@@ -271,7 +271,7 @@ function gamePause() {
 
 function draw() {
     //console.log("Draw");
-    gC.fillStyle = "grey";
+    gC.fillStyle = "#eef8ff";
     gC.fillRect(0, 0, WIDTH, HEIGHT);
     gC.fill();
     gDsk.move();
