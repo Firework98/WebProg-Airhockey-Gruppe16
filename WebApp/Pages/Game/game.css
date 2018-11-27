@@ -1,11 +1,5 @@
 @import "../../GlobalStyles/global.css";
-html, body {
-    cursor: none;
-    background-color: black;
-    color: white;
-    height: 100%;
-    overflow: hidden;
-}
+
 #listWrapper{
     cursor: pointer;
 }
@@ -23,6 +17,9 @@ html, body {
 header{
     height: 10%;
 }
+h1{
+    color: white;
+}
 #Wrapper{
     width: 100%;
     height: 90%;
@@ -31,10 +28,13 @@ header{
     float: left;
     width: 480px;
     height: 640px;
-    margin-left: 100px;
+    margin-left: 4%;
 }
 #canv{
     width: 480px;
     height: 640px;
     float: left;
-} 
+}
+#pause{
+    float: right;
+}
