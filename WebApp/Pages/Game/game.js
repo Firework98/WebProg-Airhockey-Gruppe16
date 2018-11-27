@@ -11,6 +11,7 @@ let computerGoal;
 let playerGoal;
 let newX;
 let newY;
+let gameRunning;
 
 const DECAY = 0.995;
 const REDUCTION = 0.92;
@@ -26,9 +27,15 @@ class Vec2D {
         this.x = x;
         this.y = y;
     }
+    add(vec){
+        this.x += vec.x;
+        this.y += vec.y;
+        return this;
+    }
     multiply (scalar){
         this.x *= scalar;
         this.y *= scalar;
+        return this;
     }
     length(){
         return Math.sqrt(this.x * this.x + this.y * this.y)
@@ -37,6 +44,7 @@ class Vec2D {
         let temp = this.length();
         this.x /= temp;
         this.y /= temp;
+        return this;
     }
     clone(){
         return (new Vec2D(this.x,this.y));
@@ -94,8 +102,6 @@ class Disk{
             document.getElementById("playerScore").innerText = player.points;
             document.getElementById("computerScore").innerText = computer.points;
 
-
-            console.log("In Goal")
         } else{
             if (this.x + this.radius > WIDTH){
                 this.x = WIDTH - this.radius;
@@ -113,7 +119,6 @@ class Disk{
     }
     checkCollisionWithPusher(pusher){
         let distVec = new Vec2D(this.x-pusher.x,this.y-pusher.y);
-        //console.log("Dist"+distVec.x + " | " + distVec.y);
         if (distVec.length() < pusher.radius + this.radius + EPSILONCOLL){
             this.col = "blue";
             let distDir = distVec.clone();
@@ -185,7 +190,21 @@ class Pusher{
     }
 
     moveTo(x,y){
-        let newPos = this.checkBorderCollision(x,y);
+        let steps = 10;
+        let newPos = new Vec2D(x,y);
+        let oldPos = new Vec2D(this.x,this.y);
+        let moveVect = new Vec2D(newPos.x - oldPos.x, newPos.y - oldPos.y);
+        let steplength = moveVect.length()/steps;
+        let boundaryColl = false;
+        let diskColl = false;
+        for (let i = 0; i <= steps && !boundaryColl; i++) {
+            let intermediatePos = oldPos.clone().add(moveVect.clone().normalize().multiply(steplength * i));
+            if (this.checkBorderCollision(intermediatePos.x,intermediatePos.y)){
+                intermediatePos = this.computeBorderCollision(intermediatePos.x,intermediatePos.y);
+            }
+            //this.setPos(intermediatePos.x, intermediatePos.y);
+            gDsk.checkCollisionWithPusher(this);
+        }
         this.setPos(newPos.x, newPos.y);
     }
 
@@ -198,15 +217,18 @@ class Pusher{
     }
 
     checkBorderCollision(newX,newY){
+        return newX + this.radius > WIDTH || newX - this.radius < 0 || newY + this.radius > this.lowerBoarder || newY - this.radius < this.upperBoarder;
+    }
+    computeBorderCollision(newX,newY){
         if (newX + this.radius > WIDTH){
             newX = WIDTH - this.radius;
         }
         if (newX - this.radius < 0){
             newX = this.radius;
         }
-        if (newY + this.radius > this.lowerBoarder){
+        if (newY + this.radius > this.lowerBoarder) {
             newY = this.lowerBoarder - this.radius;
-
+        }
         if (newY - this.radius < this.upperBoarder){
              newY = this.upperBoarder + this.radius;
         }
@@ -223,7 +245,7 @@ function init(){
     let bRect = canv.getBoundingClientRect();
     xOffSet = bRect.left;
     yOffSet = bRect.top;
-    let psh = new Pusher(40,50,40, HEIGHT/2, HEIGHT);
+    let psh = new Pusher(40,50,40, 0, HEIGHT);
     let dsk = new Disk(30,40,50);
     let third =  WIDTH / 3;
 
