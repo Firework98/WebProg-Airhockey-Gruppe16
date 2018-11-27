@@ -1,45 +1,48 @@
 @import "../../GlobalStyles/global.css";
 
-#listWrapper{
+#listWrapper {
     cursor: pointer;
 }
 
-#playerScore{
-    background: blue;
-}
-
-#scoreWrapper{
+#scoreWrapper {
     float: left;
     width: 10%;
     height: 100%;
 }
-.score{
+
+.score {
     width: 100%;
     float: top;
     font-size: 50px;
 }
-header{
+
+header {
     height: 10%;
 }
-h1{
+
+h1 {
     color: white;
 }
-#Wrapper{
+
+#Wrapper {
     width: 100%;
     height: 90%;
 }
-#gameWrapper{
+
+#gameWrapper {
     float: left;
     width: 480px;
     height: 640px;
     margin-left: 4%;
 }
-#canv{
+
+#canv {
     width: 480px;
     height: 640px;
     float: left;
 }
-#pause{
+
+#pause {
     width: 30px;
     height: 30px;
     float: right;
