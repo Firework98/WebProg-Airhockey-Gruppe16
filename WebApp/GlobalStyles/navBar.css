@@ -1,9 +1,7 @@
 ul{
     list-style-type: none;
     background-color:  #ee3e61;
-
     width: 100%;
-
 }
 
 li a{
@@ -16,6 +14,8 @@ li a{
     border: 20px ;
     border-radius: 12px;
     margin-bottom: 10%;
+    font-family: "Andale Mono" , sans-serif;
+    text-decoration: none;
 
 }
 
@@ -27,7 +27,6 @@ li a:hover{
 li a.active{
     color: black;
     border-color: brown;
-
     border-width: medium;
     border-style: inset;
 }
