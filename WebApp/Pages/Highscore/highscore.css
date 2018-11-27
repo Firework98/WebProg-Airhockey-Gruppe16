@@ -18,7 +18,7 @@ hr{
     border: solid black 1px;
 }
 p{
-    font-family: "Comic Sans MS";
+    font-family: Comic Sans MS, sans-serif;
 }
 form {
     width: 15em;
@@ -40,7 +40,7 @@ input {
     width: 55%;
 }
 #inputName{
-    font-family: "Arial";
+    font-family: "Arial" ,sans-serif;
 
 }
 #save{
