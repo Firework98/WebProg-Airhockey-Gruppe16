@@ -119,20 +119,19 @@ class Disk{
     }
     checkCollisionWithPusher(pusher){
         let distVec = new Vec2D(this.x-pusher.x,this.y-pusher.y);
-        if (distVec.length() < pusher.radius + this.radius + EPSILONCOLL){
-            this.col = "blue";
-            let distDir = distVec.clone();
-            distDir.normalize();
-            let pOldVec = pusher.getLast();
-            let pVelo = new Vec2D(pusher.x - pOldVec.x, pusher.y - pOldVec.y);
-            let multFactor = Math.sqrt(pVelo.length() * pVelo.length() + this.velo.length() * this.velo.length())*0.96;
-            multFactor = (multFactor > CAP ? CAP : multFactor);
-            console.error("Pvelo = (" + pVelo.x + " | " + pVelo.y + ")");
-            distDir.multiply(multFactor);
-            this.velo = distDir;
-        } else {
-            this.col = "black";
-        }
+        return distVec.length() < pusher.radius + this.radius + EPSILONCOLL;
+    }
+    computeCollisionWithPusher(pusher){
+        let distVec = new Vec2D(this.x-pusher.x,this.y-pusher.y);
+        let distDir = distVec.clone();
+        distDir.normalize();
+        let pOldVec = pusher.getLast();
+        let pVelo = new Vec2D(newPos.x-pusher.x, newPos.y-pusher.y);
+        let multFactor = Math.sqrt(pVelo.length() * pVelo.length() + this.velo.length() * this.velo.length())*0.96;
+        multFactor = (multFactor > CAP ? CAP : multFactor);
+        console.error("Pvelo = (" + pVelo.x + " | " + pVelo.y + ")");
+        distDir.multiply(multFactor);
+        this.velo = distDir;
     }
 }
 class Player{
@@ -200,10 +199,12 @@ class Pusher{
         for (let i = 0; i <= steps && !boundaryColl; i++) {
             let intermediatePos = oldPos.clone().add(moveVect.clone().normalize().multiply(steplength * i));
             if (this.checkBorderCollision(intermediatePos.x,intermediatePos.y)){
-                intermediatePos = this.computeBorderCollision(intermediatePos.x,intermediatePos.y);
+                newPos = this.computeBorderCollision(intermediatePos.x,intermediatePos.y);
             }
             //this.setPos(intermediatePos.x, intermediatePos.y);
-            gDsk.checkCollisionWithPusher(this);
+            if (gDsk.checkCollisionWithPusher(this)){
+                gDsk.computeCollisionWithPusher(this);
+            }
         }
         this.setPos(newPos.x, newPos.y);
     }
