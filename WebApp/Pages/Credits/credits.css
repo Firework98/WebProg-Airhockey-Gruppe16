@@ -5,6 +5,7 @@ hr{
 }
 table, td, th {
     border: 1px solid black;
+    border-collapse: collapse;
 }
 th, td {
     padding: 15px;
@@ -21,7 +22,18 @@ td{
     text-align: left;
     font-size: 125%;
 }
-tr:nth-child(even) {background-color: whitesmoke;}
+tr:nth-child(even) {
+    background-color: floralwhite;
+}
+tr:nth-child(odd) {
+    background-color: white;
+}
+tbody tr:hover, tfoot tr:hover {
+    background-color: #de9595;
+}
+tbody td:hover, tfoot td:hover {
+    background-color: indianred;
+}
 
 #Wrapper{
 
