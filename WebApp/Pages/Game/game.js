@@ -20,7 +20,7 @@ const HEIGHT = 640;
 const StackSize = 3;
 const CAP = 17;
 const EPSILONCOLL = 1.2;
-const EPSILONMOVE = 1
+const EPSILONMOVE = 1;
 
 class Vec2D {
     constructor(x, y) {
@@ -171,7 +171,7 @@ class Pusher{
         this.stack = [];
         this.upperBoarder = upperBoarder;
         this.lowerBoarder = lowerBoarder;
-        for(var i = 0; i < StackSize; i++){
+        for(let i = 0; i < StackSize; i++){
             this.stack.push(new Vec2D(x,y));
         }
     }
@@ -264,7 +264,7 @@ function init(){
         newY = e.pageY - yOffSet;
         //pPush.moveTo(x,y);
         //console.log("Mouse");
-    })
+    });
     document.addEventListener("keypress", handleKeyPress );
 }
 
@@ -288,12 +288,13 @@ function drawGameLines() {
     gC.fillRect(0, 0, WIDTH, HEIGHT);
     gC.fill();
     gC.strokeStyle = "blue";
+    gC.lineWidth = 3;
     gC.beginPath();
     gC.setLineDash([4, 15]);
-    gC.arc(240, 0, 75,-0.035*Math.PI, Math.PI *1);
+    gC.arc(240, 0, 75,-0.035*Math.PI, Math.PI);
     gC.stroke();
     gC.beginPath();
-    gC.arc(240, HEIGHT, 75,Math.PI *1*0.4, Math.PI*2);
+    gC.arc(240, HEIGHT, 75,Math.PI *0.4, Math.PI*2);
     gC.stroke();
     gC.beginPath();
     gC.moveTo(0,HEIGHT/2);
