@@ -1,13 +1,8 @@
 @import "../../GlobalStyles/global.css";
-html, body {
-    background-color: lightgrey;
-    color: black;
-    height: 100%;
-    overflow: hidden;
-}
+
 h2{
-    color: orangered;
-    font-family: "Andale Mono";
+    color: whitesmoke;
+    font-family: "Andale Mono", sans-serif;
 }
 p{
     font-family: Optima;
@@ -26,4 +21,5 @@ hr{
 }
 #listWrapper{
     margin-right: 5%;
+    margin-top: 5%;
 }

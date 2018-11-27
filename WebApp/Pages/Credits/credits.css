@@ -1,15 +1,11 @@
 @import "../../GlobalStyles/global.css";
-html, body {
-    background-color: lightgrey;
-    color: black;
-    height: 100%;
-    overflow: hidden;
-}
+
 hr{
     border: solid black 1px;
 }
 table, td, th {
     border: 1px solid black;
+    border-collapse: collapse;
 }
 th, td {
     padding: 15px;
@@ -20,13 +16,25 @@ table{
 th{
     background-color: #414141;
     color: whitesmoke;
-
+    font-family: "Andale Mono", sans-serif;
 }
 td{
     text-align: left;
     font-size: 125%;
+    font-family: Optima;
 }
-tr:nth-child(even) {background-color: whitesmoke;}
+tr:nth-child(even) {
+    background-color: floralwhite;
+}
+tr:nth-child(odd) {
+    background-color: white;
+}
+tbody tr:hover, tfoot tr:hover {
+    background-color: #de9595;
+}
+tbody td:hover, tfoot td:hover {
+    background-color: indianred;
+}
 
 #Wrapper{
 
