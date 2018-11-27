@@ -126,7 +126,7 @@ class Disk{
         let distDir = distVec.clone();
         distDir.normalize();
         let pOldVec = pusher.getLast();
-        let pVelo = new Vec2D(newPos.x-pusher.x, newPos.y-pusher.y);
+        let pVelo = new Vec2D(this.x-pusher.x, this.y-pusher.y);
         let multFactor = Math.sqrt(pVelo.length() * pVelo.length() + this.velo.length() * this.velo.length())*0.96;
         multFactor = (multFactor > CAP ? CAP : multFactor);
         console.error("Pvelo = (" + pVelo.x + " | " + pVelo.y + ")");
@@ -307,7 +307,7 @@ function draw() {
     pPush.moveTo(newX,newY);
     gDsk.move();
     gDsk.render();
-    pPush.moveTo(newX,newY);
+    pPush.render();
     if (gameRunning) {
         window.requestAnimationFrame(draw);
     }
