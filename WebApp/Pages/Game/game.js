@@ -9,13 +9,17 @@ let computer;
 let player;
 let computerGoal;
 let playerGoal;
+let newX;
+let newY;
 
-const DECAY = 0.997;
+const DECAY = 0.995;
 const REDUCTION = 0.92;
 const WIDTH = 480;
 const HEIGHT = 640;
 const StackSize = 3;
-const CAP = 20;
+const CAP = 17;
+const EPSILONCOLL = 1.2;
+const EPSILONMOVE = 1
 
 class Vec2D{
     constructor (x,y){
@@ -81,9 +85,11 @@ class Disk{
             let distToCGoal = Math.abs(computerGoal.y-this.y);
             let distToPGoal = Math.abs(playerGoal.y-this.y);
             if (distToCGoal <= this.radius && this.isInGoalSpace(computerGoal)){
+                console.log("Player Goal");
                 computerGoal.player.points++;
             } else{
                 if (distToPGoal <= this.radius && this.isInGoalSpace(playerGoal)){
+                    console.log("Computer Goal");
                     playerGoal.player.points++;
                 }
             }
@@ -110,13 +116,13 @@ class Disk{
     checkCollisionWithPusher(pusher){
         let distVec = new Vec2D(this.x-pusher.x,this.y-pusher.y);
         //console.log("Dist"+distVec.x + " | " + distVec.y);
-        if (distVec.length() < pusher.radius + this.radius){
+        if (distVec.length() < pusher.radius + this.radius + EPSILONCOLL){
             this.col = "blue";
             let distDir = distVec.clone();
             distDir.normalize();
             let pOldVec = pusher.getLast();
             let pVelo = new Vec2D(pusher.x - pOldVec.x, pusher.y - pOldVec.y);
-            let multFactor = pVelo.length() + this.velo.length();
+            let multFactor = Math.sqrt(pVelo.length() * pVelo.length() + this.velo.length() * this.velo.length())*0.96;
             multFactor = (multFactor > CAP ? CAP : multFactor);
             console.error("Pvelo = ("+ pVelo.x + " | " + pVelo.y + ")");
             distDir.multiply(multFactor);
@@ -156,11 +162,13 @@ class Goal{
 
 }
 class Pusher{
-    constructor (radius,x,y){
+    constructor (radius,x,y, upperBoarder, lowerBoarder){
         this.radius = radius;
         this.x = x;
         this.y = y;
         this.stack = [];
+        this.upperBoarder = upperBoarder;
+        this.lowerBoarder = lowerBoarder;
         for(var i = 0; i < StackSize; i++){
             this.stack.push(new Vec2D(x,y));
         }
@@ -182,6 +190,8 @@ class Pusher{
         let newPos = this.checkBorderCollision(x,y);
         this.setPos(newPos.x, newPos.y);
     }
+
+
     setPos(x,y){
         this.stack.push(new Vec2D (x,y));
         this.stack.shift();
@@ -196,11 +206,11 @@ class Pusher{
         if (newX - this.radius < 0){
             newX = this.radius;
         }
-        if (newY + this.radius > HEIGHT){
-            newY = HEIGHT - this.radius;
+        if (newY + this.radius > this.lowerBoarder){
+            newY = this.lowerBoarder - this.radius;
         }
-        if (newY - this.radius < 0){
-             newY = 0 + this.radius;
+        if (newY - this.radius < this.upperBoarder){
+             newY = this.upperBoarder + this.radius;
         }
         return new Vec2D(newX,newY);
     }
@@ -215,31 +225,32 @@ function init(){
     let bRect = canv.getBoundingClientRect();
     xOffSet = bRect.left;
     yOffSet = bRect.top;
-    let psh = new Pusher(40,50,40);
+    let psh = new Pusher(40,50,40, HEIGHT/2, HEIGHT);
     let dsk = new Disk(30,40,50);
     let third =  WIDTH / 3;
 
     player = new Player("Player 1", psh);
     computer = new Player("Computer", null);
-    computerGoal = new Goal(player,third,third * 2,HEIGHT);
-    playerGoal = new Goal(computer,third ,third *2,0);
+    computerGoal = new Goal(player,third,third * 2,0);
+    playerGoal = new Goal(computer,third ,third *2,HEIGHT);
     player.setGoal(playerGoal);
     computer.setGoal(computerGoal);
     pPush = psh;
     gDsk = dsk;
     window.requestAnimationFrame(draw);
     document.addEventListener("mousemove",function (e){
-        let x = e.pageX - xOffSet;
-        let y = e.pageY - yOffSet;
-        pPush.moveTo(x,y);
-        //console.log("x " + x + "y " + y);
+        newX = e.pageX - xOffSet;
+        newY = e.pageY - yOffSet;
+        //pPush.moveTo(x,y);
+        //console.log("Mouse");
     })
 }
 function draw(){
-    //console.log("Draw");
+    console.log("Draw");
     gC.fillStyle = "grey";
     gC.fillRect(0,0,WIDTH,HEIGHT);
     gC.fill();
+    pPush.moveTo(newX,newY);
     gDsk.move();
     gDsk.render();
     pPush.render();

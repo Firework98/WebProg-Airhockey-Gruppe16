@@ -10,6 +10,10 @@ html, body {
     cursor: pointer;
 }
 
+#playerScore{
+    background: blue;
+}
+
 #scoreWrapper{
     float: left;
     width: 10%;
