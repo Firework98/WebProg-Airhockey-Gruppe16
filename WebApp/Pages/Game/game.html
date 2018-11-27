@@ -14,6 +14,7 @@
 <body onload="init();">
 <audio id="audio" autoplay loop src="../../Ressources/Komiku.mp3"></audio>
 <button id="mute" onclick="audioStop()">&#9835;</button>
+<button id="pause" onclick="gamePause()">&#10074;&#10074;</button>
 <div id="Wrapper">
     <div id="listWrapper">
         <ul>
@@ -28,10 +29,15 @@
         <canvas id="canv" height="640" width="480"></canvas>
     </div>
     <div id="scoreWrapper">
+        <div id="playerScoreLabel">
+            Player
+        </div>
         <div class="score" id="playerScore">
             0
         </div>
-
+        <div id="computerScoreLabel">
+            Computer
+        </div>
         <div class="score" id="computerScore">
             0
         </div>
