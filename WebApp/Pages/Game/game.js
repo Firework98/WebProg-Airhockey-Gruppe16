@@ -75,7 +75,9 @@ class Disk{
         this.velo.x *= DECAY;
         this.velo.y *= DECAY;
         this.checkCollisionWithBorder();
-        this.checkCollisionWithPusher(pPush);
+        if (this.checkCollisionWithPusher(pPush)) {
+            this.computeCollisionWithPusher(pPush);
+        }
     }
     checkCollisionWithBorder(){
         let checkGoals = false;
