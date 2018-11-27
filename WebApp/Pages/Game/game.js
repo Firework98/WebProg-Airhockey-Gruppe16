@@ -268,12 +268,27 @@ function gamePause() {
         document.getElementById("pause").innerHTML = "&#8227;";
     }
 }
-
-function draw() {
-    //console.log("Draw");
+function drawGameLines() {
     gC.fillStyle = "grey";
     gC.fillRect(0, 0, WIDTH, HEIGHT);
     gC.fill();
+    gC.strokeStyle = "blue";
+    gC.beginPath();
+    gC.setLineDash([4, 15]);
+    gC.arc(240, 0, 75,-0.035*Math.PI, Math.PI *1);
+    gC.stroke();
+    gC.beginPath();
+    gC.arc(240, HEIGHT, 75,Math.PI *1*0.4, Math.PI*2);
+    gC.stroke();
+    gC.beginPath();
+    gC.moveTo(0,HEIGHT/2);
+    gC.lineTo(WIDTH, HEIGHT/2);
+    gC.stroke();
+    gC.setLineDash([0]);
+}
+function draw() {
+    //console.log("Draw");
+    drawGameLines();
     gDsk.move();
     gDsk.render();
     pPush.render();
