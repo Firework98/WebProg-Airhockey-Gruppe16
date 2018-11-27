@@ -9,6 +9,7 @@ let computer;
 let player;
 let computerGoal;
 let playerGoal;
+let gameRunning = true;
 
 const DECAY = 0.997;
 const REDUCTION = 0.92;
@@ -17,44 +18,51 @@ const HEIGHT = 640;
 const StackSize = 3;
 const CAP = 20;
 
-class Vec2D{
-    constructor (x,y){
+class Vec2D {
+    constructor(x, y) {
         this.x = x;
         this.y = y;
     }
-    multiply (scalar){
+
+    multiply(scalar) {
         this.x *= scalar;
         this.y *= scalar;
     }
-    length(){
+
+    length() {
         return Math.sqrt(this.x * this.x + this.y * this.y)
     }
-    normalize(){
+
+    normalize() {
         let temp = this.length();
         this.x /= temp;
         this.y /= temp;
     }
-    clone(){
-        return (new Vec2D(this.x,this.y));
+
+    clone() {
+        return (new Vec2D(this.x, this.y));
     }
 }
-class Disk{
 
-    constructor (radius,x,y){
+class Disk {
+
+    constructor(radius, x, y) {
         this.radius = radius;
         this.x = x;
         this.y = y;
-        this.velo = new Vec2D(5,5);
+        this.velo = new Vec2D(5, 5);
         this.col = "red";
     }
-    render(){
+
+    render() {
         gC.fillStyle = this.col;
         gC.beginPath();
 
-        gC.arc(this.x,this.y,this.radius,0, 2*Math.PI);
+        gC.arc(this.x, this.y, this.radius, 0, 2 * Math.PI);
         gC.fill();
     }
-    move(){
+
+    move() {
         this.x += this.velo.x;
         this.y += this.velo.y;
         this.velo.x *= DECAY;
@@ -62,28 +70,29 @@ class Disk{
         this.checkCollisionWithBorder();
         this.checkCollisionWithPusher(pPush);
     }
-    checkCollisionWithBorder(){
+
+    checkCollisionWithBorder() {
         let checkGoals = false;
-        if(this.y + this.radius <= HEIGHT && this.y - this.radius >= 0){
+        if (this.y + this.radius <= HEIGHT && this.y - this.radius >= 0) {
             checkGoals = false;
         }
-        if (this.y + this.radius > HEIGHT){
+        if (this.y + this.radius > HEIGHT) {
             this.y = HEIGHT - this.radius;
             this.velo.y = -(this.velo.y * REDUCTION);
             checkGoals = true;
         }
-        if (this.y - this.radius < 0){
+        if (this.y - this.radius < 0) {
             this.y = 0 + this.radius;
             this.velo.y = -(this.velo.y * REDUCTION);
             checkGoals = true;
         }
-        if(checkGoals && (this.isInGoalSpace(computerGoal) || this.isInGoalSpace(playerGoal))){
-            let distToCGoal = Math.abs(computerGoal.y-this.y);
-            let distToPGoal = Math.abs(playerGoal.y-this.y);
-            if (distToCGoal <= this.radius && this.isInGoalSpace(computerGoal)){
+        if (checkGoals && (this.isInGoalSpace(computerGoal) || this.isInGoalSpace(playerGoal))) {
+            let distToCGoal = Math.abs(computerGoal.y - this.y);
+            let distToPGoal = Math.abs(playerGoal.y - this.y);
+            if (distToCGoal <= this.radius && this.isInGoalSpace(computerGoal)) {
                 computerGoal.player.points++;
-            } else{
-                if (distToPGoal <= this.radius && this.isInGoalSpace(playerGoal)){
+            } else {
+                if (distToPGoal <= this.radius && this.isInGoalSpace(playerGoal)) {
                     playerGoal.player.points++;
                 }
             }
@@ -92,25 +101,27 @@ class Disk{
 
 
             console.log("In Goal")
-        } else{
-            if (this.x + this.radius > WIDTH){
+        } else {
+            if (this.x + this.radius > WIDTH) {
                 this.x = WIDTH - this.radius;
                 this.velo.x = -(this.velo.x * REDUCTION)
             }
-            if (this.x - this.radius < 0){
+            if (this.x - this.radius < 0) {
                 this.x = this.radius;
                 this.velo.x = -(this.velo.x * REDUCTION)
             }
         }
         //console.log("Velo =" + this.velo);
     }
-    isInGoalSpace(goal){
+
+    isInGoalSpace(goal) {
         return this.x > goal.xLeft && this.x < goal.xRight;
     }
-    checkCollisionWithPusher(pusher){
-        let distVec = new Vec2D(this.x-pusher.x,this.y-pusher.y);
+
+    checkCollisionWithPusher(pusher) {
+        let distVec = new Vec2D(this.x - pusher.x, this.y - pusher.y);
         //console.log("Dist"+distVec.x + " | " + distVec.y);
-        if (distVec.length() < pusher.radius + this.radius){
+        if (distVec.length() < pusher.radius + this.radius) {
             this.col = "blue";
             let distDir = distVec.clone();
             distDir.normalize();
@@ -118,36 +129,38 @@ class Disk{
             let pVelo = new Vec2D(pusher.x - pOldVec.x, pusher.y - pOldVec.y);
             let multFactor = pVelo.length() + this.velo.length();
             multFactor = (multFactor > CAP ? CAP : multFactor);
-            console.error("Pvelo = ("+ pVelo.x + " | " + pVelo.y + ")");
+            console.error("Pvelo = (" + pVelo.x + " | " + pVelo.y + ")");
             distDir.multiply(multFactor);
             this.velo = distDir;
-        } else{
+        } else {
             this.col = "red";
         }
     }
 }
-class Player{
-    constructor(name,pusher){
+
+class Player {
+    constructor(name, pusher) {
         this.pusher = pusher;
         this.name = name;
         this.points = 0;
     }
-    setGoal(goal)
-    {
+
+    setGoal(goal) {
         this.goal = goal;
     }
 }
 
-class Goal{
-    constructor(player,xLeft,xRight,y){
+class Goal {
+    constructor(player, xLeft, xRight, y) {
         this.player = player;
         this.xLeft = xLeft;
         this.xRight = xRight;
         this.y = y;
     }
-    render(){
+
+    render() {
         gC.beginPath();
-        gC.strokeStyle="red";
+        gC.strokeStyle = "red";
         gC.lineWidth = 10;
         gC.moveTo(this.xLeft, this.y);
         gC.lineTo(this.xRight, this.y);
@@ -155,95 +168,118 @@ class Goal{
     }
 
 }
-class Pusher{
-    constructor (radius,x,y){
+
+class Pusher {
+    constructor(radius, x, y) {
         this.radius = radius;
         this.x = x;
         this.y = y;
         this.stack = [];
-        for(var i = 0; i < StackSize; i++){
-            this.stack.push(new Vec2D(x,y));
+        for (var i = 0; i < StackSize; i++) {
+            this.stack.push(new Vec2D(x, y));
         }
     }
-    getLast(){
+
+    getLast() {
         return this.stack[0];
-        
+
     }
 
-    render(){
+    render() {
         gC.fillStyle = "black";
         //console.log(""+ this.x + "  " + this.y + " " + this.radius);
         gC.beginPath();
-        gC.arc(this.x,this.y,this.radius,0, 2* Math.PI);
+        gC.arc(this.x, this.y, this.radius, 0, 2 * Math.PI);
         gC.fill();
     }
 
-    moveTo(x,y){
-        let newPos = this.checkBorderCollision(x,y);
+    moveTo(x, y) {
+        let newPos = this.checkBorderCollision(x, y);
         this.setPos(newPos.x, newPos.y);
     }
-    setPos(x,y){
-        this.stack.push(new Vec2D (x,y));
+
+    setPos(x, y) {
+        this.stack.push(new Vec2D(x, y));
         this.stack.shift();
         this.x = x;
         this.y = y;
     }
 
-    checkBorderCollision(newX,newY){
-        if (newX + this.radius > WIDTH){
+    checkBorderCollision(newX, newY) {
+        if (newX + this.radius > WIDTH) {
             newX = WIDTH - this.radius;
         }
-        if (newX - this.radius < 0){
+        if (newX - this.radius < 0) {
             newX = this.radius;
         }
-        if (newY + this.radius > HEIGHT){
+        if (newY + this.radius > HEIGHT) {
             newY = HEIGHT - this.radius;
         }
-        if (newY - this.radius < 0){
-             newY = 0 + this.radius;
+        if (newY - this.radius < 0) {
+            newY = 0 + this.radius;
         }
-        return new Vec2D(newX,newY);
+        return new Vec2D(newX, newY);
     }
 }
 
-function init(){
+function init() {
     canv = document.getElementById("canv");
     canv.style.cursor = "none";
-    if(canv != null){
+    if (canv != null) {
         gC = canv.getContext("2d");
     }
     let bRect = canv.getBoundingClientRect();
     xOffSet = bRect.left;
     yOffSet = bRect.top;
-    let psh = new Pusher(40,50,40);
-    let dsk = new Disk(30,40,50);
-    let third =  WIDTH / 3;
+    let psh = new Pusher(40, 50, 40);
+    let dsk = new Disk(30, 40, 50);
+    let third = WIDTH / 3;
 
     player = new Player("Player 1", psh);
     computer = new Player("Computer", null);
-    computerGoal = new Goal(player,third,third * 2,HEIGHT);
-    playerGoal = new Goal(computer,third ,third *2,0);
+    computerGoal = new Goal(player, third, third * 2, HEIGHT);
+    playerGoal = new Goal(computer, third, third * 2, 0);
     player.setGoal(playerGoal);
     computer.setGoal(computerGoal);
     pPush = psh;
     gDsk = dsk;
     window.requestAnimationFrame(draw);
-    document.addEventListener("mousemove",function (e){
+    document.addEventListener("mousemove", function (e) {
         let x = e.pageX - xOffSet;
         let y = e.pageY - yOffSet;
-        pPush.moveTo(x,y);
+        pPush.moveTo(x, y);
         //console.log("x " + x + "y " + y);
-    })
+    });
+    document.addEventListener("keypress", handleKeyPress );
 }
-function draw(){
+
+function handleKeyPress(e) {
+    if(e.key === "Escape"){
+        gamePause();
+    }
+}
+
+function gamePause() {
+    gameRunning = !gameRunning;
+    if(gameRunning){
+        document.getElementById("pause").innerHTML = "&#10074;&#10074;";
+        draw();
+    }else{
+        document.getElementById("pause").innerHTML = "&#8227;";
+    }
+}
+
+function draw() {
     //console.log("Draw");
     gC.fillStyle = "grey";
-    gC.fillRect(0,0,WIDTH,HEIGHT);
+    gC.fillRect(0, 0, WIDTH, HEIGHT);
     gC.fill();
     gDsk.move();
     gDsk.render();
     pPush.render();
-    window.requestAnimationFrame(draw);
+    if (gameRunning) {
+        window.requestAnimationFrame(draw);
+    }
     playerGoal.render();
     computerGoal.render();
 }
