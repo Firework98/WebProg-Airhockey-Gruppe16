@@ -27,17 +27,20 @@ class Vec2D {
         this.x = x;
         this.y = y;
     }
-    add(vec){
+
+    add(vec) {
         this.x += vec.x;
         this.y += vec.y;
         return this;
     }
-    multiply (scalar){
+
+    multiply(scalar) {
         this.x *= scalar;
         this.y *= scalar;
         return this;
     }
-    length(){
+
+    length() {
         return Math.sqrt(this.x * this.x + this.y * this.y)
     }
     normalize(){
@@ -72,9 +75,7 @@ class Disk{
         this.velo.x *= DECAY;
         this.velo.y *= DECAY;
         this.checkCollisionWithBorder();
-        if(this.checkCollisionWithPusher(pPush)){
-            this.computeCollisionWithPusher(pPush);
-        }
+        this.checkCollisionWithPusher(pPush);
     }
     checkCollisionWithBorder(){
         let checkGoals = false;
@@ -171,6 +172,7 @@ class Pusher{
         this.radius = radius;
         this.x = x;
         this.y = y;
+        this.color = "red"
         this.stack = [];
         this.upperBoarder = upperBoarder;
         this.lowerBoarder = lowerBoarder;
@@ -302,11 +304,13 @@ function gamePause() {
         document.getElementById("pause").innerHTML = "&#8227;";
     }
 }
+
 function drawGameLines() {
     gC.fillStyle = "#eef8ff";
     gC.fillRect(0, 0, WIDTH, HEIGHT);
     gC.fill();
     gC.strokeStyle = "blue";
+    gC.lineWidth = 3;
     gC.beginPath();
     gC.setLineDash([4, 15]);
     gC.arc(240, 0, 75,-0.035*Math.PI, Math.PI *1);
@@ -320,6 +324,7 @@ function drawGameLines() {
     gC.stroke();
     gC.setLineDash([0]);
 }
+
 function draw() {
     //console.log("Draw");
     drawGameLines();
