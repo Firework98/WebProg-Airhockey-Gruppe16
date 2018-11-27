@@ -1,12 +1,5 @@
 @import "../../GlobalStyles/global.css";
 
-html, body {
-    background-color: lightgrey;
-    color: black;
-    height: 100%;
-    overflow: hidden;
-}
-
 header {
     height: 15%;
     overflow: no-display;
@@ -25,7 +18,7 @@ hr{
     border: solid black 1px;
 }
 p{
-    font-family: "Comic Sans MS";
+    font-family: Comic Sans MS, sans-serif;
 }
 form {
     width: 15em;
@@ -47,7 +40,7 @@ input {
     width: 55%;
 }
 #inputName{
-    font-family: "Comic Sans MS";
+    font-family: "Arial" ,sans-serif;
 
 }
 #save{

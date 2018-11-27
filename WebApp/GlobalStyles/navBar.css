@@ -1,6 +1,6 @@
 ul{
     list-style-type: none;
-    background-color: lightgrey;
+    background-color:  #ee3e61;
 
     width: 100%;
 
@@ -35,4 +35,5 @@ li a.active{
     width: 30%;
     height: 100%;
     float: left;
+    margin-top: 5%;
 }

@@ -2,6 +2,12 @@
     margin: 0;
     padding: 0;
 }
+html, body {
+    background-color:  #ee3e61;
+    color: black;
+    height: 100%;
+    overflow: hidden;
+}
 #mute {
     width: 30px;
     height: 30px;

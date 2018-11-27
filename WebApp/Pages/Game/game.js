@@ -21,8 +21,8 @@ const CAP = 17;
 const EPSILONCOLL = 1.2;
 const EPSILONMOVE = 1
 
-class Vec2D{
-    constructor (x,y){
+class Vec2D {
+    constructor(x, y) {
         this.x = x;
         this.y = y;
     }
@@ -85,11 +85,9 @@ class Disk{
             let distToCGoal = Math.abs(computerGoal.y-this.y);
             let distToPGoal = Math.abs(playerGoal.y-this.y);
             if (distToCGoal <= this.radius && this.isInGoalSpace(computerGoal)){
-                console.log("Player Goal");
                 computerGoal.player.points++;
             } else{
                 if (distToPGoal <= this.radius && this.isInGoalSpace(playerGoal)){
-                    console.log("Computer Goal");
                     playerGoal.player.points++;
                 }
             }
@@ -124,11 +122,11 @@ class Disk{
             let pVelo = new Vec2D(pusher.x - pOldVec.x, pusher.y - pOldVec.y);
             let multFactor = Math.sqrt(pVelo.length() * pVelo.length() + this.velo.length() * this.velo.length())*0.96;
             multFactor = (multFactor > CAP ? CAP : multFactor);
-            console.error("Pvelo = ("+ pVelo.x + " | " + pVelo.y + ")");
+            console.error("Pvelo = (" + pVelo.x + " | " + pVelo.y + ")");
             distDir.multiply(multFactor);
             this.velo = distDir;
-        } else{
-            this.col = "red";
+        } else {
+            this.col = "black";
         }
     }
 }
@@ -153,7 +151,7 @@ class Goal{
     }
     render(){
         gC.beginPath();
-        gC.strokeStyle="red";
+        gC.strokeStyle = "#880000";
         gC.lineWidth = 10;
         gC.moveTo(this.xLeft, this.y);
         gC.lineTo(this.xRight, this.y);
@@ -178,8 +176,8 @@ class Pusher{
         
     }
 
-    render(){
-        gC.fillStyle = "black";
+    render() {
+        gC.fillStyle = "#ff0000";
         //console.log(""+ this.x + "  " + this.y + " " + this.radius);
         gC.beginPath();
         gC.arc(this.x,this.y,this.radius,0, 2* Math.PI);
@@ -208,7 +206,7 @@ class Pusher{
         }
         if (newY + this.radius > this.lowerBoarder){
             newY = this.lowerBoarder - this.radius;
-        }
+
         if (newY - this.radius < this.upperBoarder){
              newY = this.upperBoarder + this.radius;
         }
@@ -244,17 +242,37 @@ function init(){
         //pPush.moveTo(x,y);
         //console.log("Mouse");
     })
+    document.addEventListener("keypress", handleKeyPress );
 }
-function draw(){
-    console.log("Draw");
-    gC.fillStyle = "grey";
-    gC.fillRect(0,0,WIDTH,HEIGHT);
+
+function handleKeyPress(e) {
+    if(e.key === "Escape"){
+        gamePause();
+    }
+}
+
+function gamePause() {
+    gameRunning = !gameRunning;
+    if(gameRunning){
+        document.getElementById("pause").innerHTML = "&#10074;&#10074;";
+        draw();
+    }else{
+        document.getElementById("pause").innerHTML = "&#8227;";
+    }
+}
+
+function draw() {
+    //console.log("Draw");
+    gC.fillStyle = "#eef8ff";
+    gC.fillRect(0, 0, WIDTH, HEIGHT);
     gC.fill();
     pPush.moveTo(newX,newY);
     gDsk.move();
     gDsk.render();
     pPush.render();
-    window.requestAnimationFrame(draw);
+    if (gameRunning) {
+        window.requestAnimationFrame(draw);
+    }
     playerGoal.render();
     computerGoal.render();
 }

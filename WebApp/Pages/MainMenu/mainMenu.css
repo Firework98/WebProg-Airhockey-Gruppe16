@@ -1,12 +1,5 @@
 @import "../../GlobalStyles/global.css";
 
-html, body {
-    background-color: lightgrey;
-    color: black;
-    height: 100%;
-    overflow: hidden;
-}
-
 header {
     height: 15%;
     overflow: no-display;
