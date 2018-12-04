@@ -61,7 +61,7 @@ class Disk{
         this.col = "black";
     }
     render(){
-        gC.fillStyle = 'rgb(33, 33, 33)';
+        gC.fillStyle = 'rgb(53, 53, 53)';
         gC.beginPath();
 
         gC.arc(this.x,this.y,this.radius,0, 2*Math.PI);
