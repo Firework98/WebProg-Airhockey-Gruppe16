@@ -48,3 +48,6 @@ h1 {
     height: 30px;
     float: right;
 }
+#inputForm {
+    display: none;
+}

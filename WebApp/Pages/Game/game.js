@@ -13,7 +13,12 @@ let playerGoal;
 let newX;
 let newY;
 let gameRunning;
+let inputForm;
+let gameFinish = false;
+let inputField;
+let username;
 
+const targetScore = 7;
 const DECAY = 0.997;
 const REDUCTION = 0.94;
 const WIDTH = 480;
@@ -315,6 +320,39 @@ class ComputerPusher extends Pusher{
         this.moveTo(this.x + horizontalDelta, this.y);
     }
 }
+function addEntry() {
+    console.log("Add Entry");
+    let localHighscoreArr = getLocalHighscore();
+    //const username = document.getElementById('inputName').value;
+    //const score = document.getElementById('inputScore').value;
+    let score = player.points;
+    username = inputField.value;
+    if (username !== '' && score !== '') {
+        const newEntry = {'Score': score, 'Username': username};
+        let i;
+        if (localHighscoreArr.length !== 0) {
+            for (i = 0; i < localHighscoreArr.length; i++) {
+                if (parseInt(score) >= parseInt(localHighscoreArr[i].Score)) {
+                    localHighscoreArr.splice(i, 0, newEntry);
+                    break;
+                } else if ((i) === localHighscoreArr.length-1) {
+                    localHighscoreArr.push(newEntry);
+                    break;
+                }
+            }
+        } else {
+            localHighscoreArr.push(newEntry);
+        }
+        localStorage.setItem('localHighscore', JSON.stringify(localHighscoreArr));
+    } else {
+        alert('Please insert!');
+    }
+}
+function getLocalHighscore() {
+    let localHighscoreArr = localStorage.getItem('localHighscore');
+    localHighscoreArr = localHighscoreArr ? JSON.parse(localHighscoreArr) : [];
+    return localHighscoreArr;
+}
 function init(){
     canv = document.getElementById("canv");
     canv.style.cursor = "none";
@@ -345,6 +383,9 @@ function init(){
         //console.log("Mouse");
     });
     document.addEventListener("keypress", handleKeyPress );
+    inputForm = document.getElementById("inputForm");
+    inputField = document.getElementById("username");
+    //submitButton = document.getElementById("save").onclick = addEntry();
 }
 
 function handleKeyPress(e) {
@@ -394,38 +435,11 @@ function draw() {
     pPush.render();
     playerGoal.render();
     computerGoal.render();
-    if (gameRunning) {
+    if(player.points >= targetScore || computer.points >= targetScore){
+        gameFinish = true;
+        inputForm.style.display = "block";
+    }
+    if (gameRunning && !gameFinish) {
         window.requestAnimationFrame(draw);
     }
-}
-
-function addEntry(username, score) {
-    let localHighscoreArr = getLocalHighscore();
-    //const username = document.getElementById('inputName').value;
-    //const score = document.getElementById('inputScore').value;
-    if (username !== '' && score !== '') {
-        const newEntry = {'Score': score, 'Username': username};
-        let i;
-        if (localHighscoreArr.length !== 0) {
-            for (i = 0; i < localHighscoreArr.length; i++) {
-                if (parseInt(score) >= parseInt(localHighscoreArr[i].Score)) {
-                    localHighscoreArr.splice(i, 0, newEntry);
-                    break;
-                } else if ((i) === localHighscoreArr.length-1) {
-                    localHighscoreArr.push(newEntry);
-                    break;
-                }
-            }
-        } else {
-            localHighscoreArr.push(newEntry);
-        }
-        localStorage.setItem('localHighscore', JSON.stringify(localHighscoreArr));
-    } else {
-        alert('Please insert!');
-    }
-}
-function getLocalHighscore() {
-    let localHighscoreArr = localStorage.getItem('localHighscore');
-    localHighscoreArr = localHighscoreArr ? JSON.parse(localHighscoreArr) : [];
-    return localHighscoreArr;
 }
