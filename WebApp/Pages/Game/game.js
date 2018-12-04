@@ -11,6 +11,7 @@ let computerGoal;
 let playerGoal;
 let newX;
 let newY;
+let gameRunning;
 
 const DECAY = 0.995;
 const REDUCTION = 0.92;
@@ -19,24 +20,34 @@ const HEIGHT = 640;
 const StackSize = 3;
 const CAP = 17;
 const EPSILONCOLL = 1.2;
-const EPSILONMOVE = 1
+const EPSILONMOVE = 1;
 
 class Vec2D {
     constructor(x, y) {
         this.x = x;
         this.y = y;
     }
-    multiply (scalar){
+
+    add(vec) {
+        this.x += vec.x;
+        this.y += vec.y;
+        return this;
+    }
+
+    multiply(scalar) {
         this.x *= scalar;
         this.y *= scalar;
+        return this;
     }
-    length(){
+
+    length() {
         return Math.sqrt(this.x * this.x + this.y * this.y)
     }
     normalize(){
         let temp = this.length();
         this.x /= temp;
         this.y /= temp;
+        return this;
     }
     clone(){
         return (new Vec2D(this.x,this.y));
@@ -49,7 +60,7 @@ class Disk{
         this.x = x;
         this.y = y;
         this.velo = new Vec2D(5,5);
-        this.col = "red";
+        this.col = "black";
     }
     render(){
         gC.fillStyle = this.col;
@@ -64,7 +75,9 @@ class Disk{
         this.velo.x *= DECAY;
         this.velo.y *= DECAY;
         this.checkCollisionWithBorder();
-        this.checkCollisionWithPusher(pPush);
+        if (this.checkCollisionWithPusher(pPush)) {
+            this.computeCollisionWithPusher(pPush);
+        }
     }
     checkCollisionWithBorder(){
         let checkGoals = false;
@@ -94,8 +107,6 @@ class Disk{
             document.getElementById("playerScore").innerText = player.points;
             document.getElementById("computerScore").innerText = computer.points;
 
-
-            console.log("In Goal")
         } else{
             if (this.x + this.radius > WIDTH){
                 this.x = WIDTH - this.radius;
@@ -113,21 +124,20 @@ class Disk{
     }
     checkCollisionWithPusher(pusher){
         let distVec = new Vec2D(this.x-pusher.x,this.y-pusher.y);
-        //console.log("Dist"+distVec.x + " | " + distVec.y);
-        if (distVec.length() < pusher.radius + this.radius + EPSILONCOLL){
-            this.col = "blue";
-            let distDir = distVec.clone();
-            distDir.normalize();
-            let pOldVec = pusher.getLast();
-            let pVelo = new Vec2D(pusher.x - pOldVec.x, pusher.y - pOldVec.y);
-            let multFactor = Math.sqrt(pVelo.length() * pVelo.length() + this.velo.length() * this.velo.length())*0.96;
-            multFactor = (multFactor > CAP ? CAP : multFactor);
-            console.error("Pvelo = (" + pVelo.x + " | " + pVelo.y + ")");
-            distDir.multiply(multFactor);
-            this.velo = distDir;
-        } else {
-            this.col = "black";
-        }
+        return distVec.length() < pusher.radius + this.radius + EPSILONCOLL;
+    }
+
+    computeCollisionWithPusher(pusher){
+        let distVec = new Vec2D(this.x-pusher.x,this.y-pusher.y);
+        let distDir = distVec.clone();
+        distDir.normalize();
+        let pOldVec = pusher.getLast();
+        let pVelo = new Vec2D(pOldVec.x-pusher.x, pOldVec.y-pusher.y);
+        let multFactor = Math.sqrt(pVelo.length() * pVelo.length() + this.velo.length() * this.velo.length())*0.96;
+        multFactor = (multFactor > CAP ? CAP : multFactor);
+        console.error("Pvelo = (" + pVelo.x + " | " + pVelo.y + ")");
+        distDir.multiply(multFactor);
+        this.velo = distDir;
     }
 }
 class Player{
@@ -151,7 +161,7 @@ class Goal{
     }
     render(){
         gC.beginPath();
-        gC.strokeStyle = "#880000";
+        gC.strokeStyle = "#688488";
         gC.lineWidth = 10;
         gC.moveTo(this.xLeft, this.y);
         gC.lineTo(this.xRight, this.y);
@@ -164,6 +174,7 @@ class Pusher{
         this.radius = radius;
         this.x = x;
         this.y = y;
+        this.color = "red"
         this.stack = [];
         this.upperBoarder = upperBoarder;
         this.lowerBoarder = lowerBoarder;
@@ -177,15 +188,47 @@ class Pusher{
     }
 
     render() {
-        gC.fillStyle = "#ff0000";
+        gC.fillStyle = this.color;
         //console.log(""+ this.x + "  " + this.y + " " + this.radius);
         gC.beginPath();
         gC.arc(this.x,this.y,this.radius,0, 2* Math.PI);
         gC.fill();
     }
+    computeCollisionWithDisk(disk,oldPos,intermediatePos, newPos){
+        let distVec = new Vec2D(disk.x-intermediatePos.x,disk.y-intermediatePos.y);
+        let distDir = distVec.clone();
+        distDir.normalize();
+        let pOldVec = oldPos;
+        let pVelo = new Vec2D(newPos.x-oldPos.x, newPos.y-oldPos.y);
+        let multFactor = Math.sqrt(pVelo.length() * pVelo.length() + disk.velo.length() * disk.velo.length())*0.96;
+        multFactor = (multFactor > CAP ? CAP : multFactor);
+        console.error("Pvelo = (" + pVelo.x + " | " + pVelo.y + ")");
+        distDir.multiply(multFactor);
+        disk.velo = distDir;
+    }
 
     moveTo(x,y){
-        let newPos = this.checkBorderCollision(x,y);
+        let steps = 100;
+        let newPos = new Vec2D(x,y);
+        let oldPos = new Vec2D(this.x,this.y);
+        let moveVect = new Vec2D(newPos.x - oldPos.x, newPos.y - oldPos.y);
+        let steplength = moveVect.length()/steps;
+        let boundaryColl = false;
+        let diskColl = false;
+        for (let i = 0; i <= steps; i++) {
+            let intermediatePos = oldPos.clone().add(moveVect.clone().normalize().multiply(steplength * i));
+            if (this.checkBorderCollision(intermediatePos.x,intermediatePos.y)){
+                newPos = this.computeBorderCollision(intermediatePos.x,intermediatePos.y);
+            }
+            let ghostPusher = new Pusher(this.radius,intermediatePos.x,intermediatePos.y,this.upperBoarder,this.lowerBoarder);
+            //this.setPos(intermediatePos.x, intermediatePos.y);
+            if (gDsk.checkCollisionWithPusher(ghostPusher)){
+                this.computeCollisionWithDisk(gDsk,oldPos,intermediatePos,newPos);
+                gDsk.move();
+                console.error("Col at " + i);
+                diskColl = true;
+            }
+        }
         this.setPos(newPos.x, newPos.y);
     }
 
@@ -198,15 +241,18 @@ class Pusher{
     }
 
     checkBorderCollision(newX,newY){
+        return newX + this.radius > WIDTH || newX - this.radius < 0 || newY + this.radius > this.lowerBoarder || newY - this.radius < this.upperBoarder;
+    }
+    computeBorderCollision(newX,newY){
         if (newX + this.radius > WIDTH){
             newX = WIDTH - this.radius;
         }
         if (newX - this.radius < 0){
             newX = this.radius;
         }
-        if (newY + this.radius > this.lowerBoarder){
+        if (newY + this.radius > this.lowerBoarder) {
             newY = this.lowerBoarder - this.radius;
-
+        }
         if (newY - this.radius < this.upperBoarder){
              newY = this.upperBoarder + this.radius;
         }
@@ -223,7 +269,7 @@ function init(){
     let bRect = canv.getBoundingClientRect();
     xOffSet = bRect.left;
     yOffSet = bRect.top;
-    let psh = new Pusher(40,50,40, HEIGHT/2, HEIGHT);
+    let psh = new Pusher(40,50,40, 0, HEIGHT);
     let dsk = new Disk(30,40,50);
     let third =  WIDTH / 3;
 
@@ -261,11 +307,29 @@ function gamePause() {
     }
 }
 
-function draw() {
-    //console.log("Draw");
+function drawGameLines() {
     gC.fillStyle = "#eef8ff";
     gC.fillRect(0, 0, WIDTH, HEIGHT);
     gC.fill();
+    gC.strokeStyle = "blue";
+    gC.lineWidth = 3;
+    gC.beginPath();
+    gC.setLineDash([4, 15]);
+    gC.arc(240, 0, 75,-0.035*Math.PI, Math.PI *1);
+    gC.stroke();
+    gC.beginPath();
+    gC.arc(240, HEIGHT, 75,Math.PI *1*0.4, Math.PI*2);
+    gC.stroke();
+    gC.beginPath();
+    gC.moveTo(0,HEIGHT/2);
+    gC.lineTo(WIDTH, HEIGHT/2);
+    gC.stroke();
+    gC.setLineDash([0]);
+}
+
+function draw() {
+    //console.log("Draw");
+    drawGameLines();
     pPush.moveTo(newX,newY);
     gDsk.move();
     gDsk.render();

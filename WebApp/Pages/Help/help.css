@@ -1,13 +1,15 @@
 @import "../../GlobalStyles/global.css";
 
-h2{
+h2 {
     color: whitesmoke;
     font-family: "Andale Mono", sans-serif;
 }
-p{
+
+p {
     font-family: Optima;
 }
-hr{
+
+hr {
     border: solid black 1px;
 }
 
@@ -15,11 +17,13 @@ hr{
     width: 75%;
     margin-top: 5%;
 }
-#Wrapper{
+
+#Wrapper {
     width: 100%;
     height: 100%;
 }
-#listWrapper{
+
+#listWrapper {
     margin-right: 5%;
     margin-top: 5%;
 }
