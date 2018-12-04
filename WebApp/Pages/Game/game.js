@@ -13,14 +13,12 @@ let newX;
 let newY;
 let gameRunning;
 
-const DECAY = 0.995;
-const REDUCTION = 0.92;
+const DECAY = 0.997;
+const REDUCTION = 0.94;
 const WIDTH = 480;
 const HEIGHT = 640;
-const StackSize = 3;
-const CAP = 17;
-const EPSILONCOLL = 1.2;
-const EPSILONMOVE = 1;
+const CAP = 20;
+const EPSILONCOLL = 0.2;
 
 class Vec2D {
     constructor(x, y) {
@@ -76,6 +74,24 @@ class Disk{
         gC.fill();
     }
     move(){
+        /*let steps = 100;
+        let newPos = new Vec2D(this.x+this.velo.x,this.y+this.velo.y);
+        let oldPos = new Vec2D(this.x,this.y);
+        let moveVect = this.velo;
+        let steplength = moveVect.length()/steps;
+        let pushColl = false;
+        let formerPos = oldPos;
+        for (let i = 0; i <= steps && !pushColl; i++) {
+            let intermediatePos = oldPos.clone().add(moveVect.clone().normalize().multiply(steplength * i));
+
+            if(this.checkCollisionWithPusher(pPush)){
+                this.computeCollisionWithPusher(pPush);
+            }
+            formerPos = intermediatePos.clone();
+        }
+
+        this.setPos(newPos.x, newPos.y);
+        */
         this.x += this.velo.x;
         this.y += this.velo.y;
         this.velo.x *= DECAY;
@@ -125,6 +141,7 @@ class Disk{
         }
         //console.log("Velo =" + this.velo);
     }
+
     isInGoalSpace(goal){
         return this.x > goal.xLeft && this.x < goal.xRight;
     }
@@ -139,7 +156,7 @@ class Disk{
         distDir.normalize();
         let pOldVec = pusher.getLast();
         let pVelo = new Vec2D(pOldVec.x-pusher.x, pOldVec.y-pusher.y);
-        let multFactor = Math.sqrt(pVelo.length() * pVelo.length() + this.velo.length() * this.velo.length())*0.96;
+        let multFactor = Math.sqrt(pVelo.length() * pVelo.length() +  0.2 * this.velo.length() * this.velo.length());
         multFactor = (multFactor > CAP ? CAP : multFactor);
         console.error("Pvelo = (" + pVelo.x + " | " + pVelo.y + ")");
         distDir.multiply(multFactor);
@@ -180,16 +197,13 @@ class Pusher{
         this.radius = radius;
         this.x = x;
         this.y = y;
-        this.color = "red"
-        this.stack = [];
+        this.color = "red";
+        this.oldPos = new Vec2D(this.x,this.y);
         this.upperBoarder = upperBoarder;
         this.lowerBoarder = lowerBoarder;
-        for(var i = 0; i < StackSize; i++){
-            this.stack.push(new Vec2D(x,y));
-        }
     }
     getLast(){
-        return this.stack[0];
+        return this.oldPos;
         
     }
 
@@ -218,9 +232,9 @@ class Pusher{
         distDir.normalize();
         let pOldVec = oldPos;
         let pVelo = new Vec2D(newPos.x-oldPos.x, newPos.y-oldPos.y);
-        let multFactor = Math.sqrt(pVelo.length() * pVelo.length() + disk.velo.length() * disk.velo.length())*0.96;
+        let multFactor = Math.sqrt(pVelo.length() * pVelo.length() + 0.3 * disk.velo.length() * disk.velo.length());
         multFactor = (multFactor > CAP ? CAP : multFactor);
-        console.error("Pvelo = (" + pVelo.x + " | " + pVelo.y + ")");
+        console.error("Oldpos = (" + oldPos.x + " | " + oldPos.y + ")" + "NewPos = (" + newPos.x + " | " + newPos.y + ")" + "Pvelo = (" + pVelo.x + " | " + pVelo.y + ")");
         distDir.multiply(multFactor);
         disk.velo = distDir;
     }
@@ -233,27 +247,44 @@ class Pusher{
         let steplength = moveVect.length()/steps;
         let boundaryColl = false;
         let diskColl = false;
-        for (let i = 0; i <= steps; i++) {
-            let intermediatePos = oldPos.clone().add(moveVect.clone().normalize().multiply(steplength * i));
-            if (this.checkBorderCollision(intermediatePos.x,intermediatePos.y)){
-                newPos = this.computeBorderCollision(intermediatePos.x,intermediatePos.y);
+        let formerPos = oldPos;
+        if(steplength > 0.001){
+            for (let i = 1; i <= steps && !diskColl; i++) {
+                let intermediatePos = oldPos.clone().add(moveVect.clone().normalize().multiply(steplength * i));
+                if (this.checkBorderCollision(intermediatePos.x,intermediatePos.y)){
+                    //console.error("Border Collision at (" + intermediatePos.x + " | " + intermediatePos.y + ")");
+                    intermediatePos = this.computeBorderCollision(intermediatePos.x,intermediatePos.y);
+                    //console.error("After Border Collision now (" + intermediatePos.x + " | " + intermediatePos.y + ")");
+                    //boundaryColl = true;
+                }
+                let ghostPusher = new Pusher(this.radius,intermediatePos.x,intermediatePos.y,this.upperBoarder,this.lowerBoarder);
+                //this.setPos(intermediatePos.x, intermediatePos.y);
+                if (gDsk.checkCollisionWithPusher(ghostPusher)){
+                    this.computeCollisionWithDisk(gDsk,oldPos,intermediatePos,newPos);
+                    console.error("Col at " + i);
+                    //TODO Try Moving Disk out of Pusher
+                    // If possible then continue
+                    // Else If Border Collision
+                    if(gDsk.checkCollisionWithPusher(ghostPusher)){
+                        //Collision even after Move. Has to be stuck
+                        diskColl = true;
+                        newPos = formerPos.clone();
+                    }
+
+                } else {
+                    newPos = intermediatePos.clone();
+                }
+                formerPos = intermediatePos.clone();
             }
-            let ghostPusher = new Pusher(this.radius,intermediatePos.x,intermediatePos.y,this.upperBoarder,this.lowerBoarder);
-            //this.setPos(intermediatePos.x, intermediatePos.y);
-            if (gDsk.checkCollisionWithPusher(ghostPusher)){
-                this.computeCollisionWithDisk(gDsk,oldPos,intermediatePos,newPos);
-                gDsk.move();
-                console.error("Col at " + i);
-                diskColl = true;
-            }
+            this.setPos(newPos.x, newPos.y);
+        } else {
+            this.setPos(this.x,this.y);
         }
-        this.setPos(newPos.x, newPos.y);
     }
 
 
     setPos(x,y){
-        this.stack.push(new Vec2D (x,y));
-        this.stack.shift();
+        this.oldPos = new Vec2D(x,y);
         this.x = x;
         this.y = y;
     }
@@ -280,7 +311,7 @@ class Pusher{
 
 function init(){
     canv = document.getElementById("canv");
-    canv.style.cursor = "none";
+    canv.style.cursor = "pointer";
     if(canv != null){
         gC = canv.getContext("2d");
     }
