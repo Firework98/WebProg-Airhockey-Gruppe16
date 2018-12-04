@@ -2,11 +2,14 @@
 
 h2 {
     color: whitesmoke;
+    text-align: left;
     font-family: "Andale Mono", sans-serif;
 }
 
 p {
-    font-family: Optima;
+    font-family: Optima sans-serif;
+    text-align: justify;
+    word-spacing: 3px
 }
 
 hr {

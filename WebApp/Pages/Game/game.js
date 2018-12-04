@@ -13,12 +13,17 @@ let playerGoal;
 let newX;
 let newY;
 let gameRunning;
+let inputForm;
+let gameFinish = false;
+let inputField;
+let username;
 
+const targetScore = 7;
 const DECAY = 0.999;
 const REDUCTION = 0.96;
 const WIDTH = 480;
 const HEIGHT = 640;
-const CAP = 30;
+const CAP = 20;
 const EPSILONCOLL = 0.2;
 
 class Vec2D {
@@ -158,7 +163,7 @@ class Disk{
         let pVelo = new Vec2D(pOldVec.x-pusher.x, pOldVec.y-pusher.y);
         let multFactor = Math.sqrt(pVelo.length() * pVelo.length() +  0.4 * this.velo.length() * this.velo.length());
         multFactor = (multFactor > CAP ? CAP : multFactor);
-        console.error("Pvelo = (" + pVelo.x + " | " + pVelo.y + ")");
+        //console.error("Pvelo = (" + pVelo.x + " | " + pVelo.y + ")");
         distDir.multiply(multFactor);
         this.velo = distDir;
     }
@@ -234,7 +239,7 @@ class Pusher{
         let pVelo = new Vec2D(newPos.x-oldPos.x, newPos.y-oldPos.y);
         let multFactor = Math.sqrt(pVelo.length() * pVelo.length() + 0.3 * disk.velo.length() * disk.velo.length());
         multFactor = (multFactor > CAP ? CAP : multFactor);
-        console.error("Oldpos = (" + oldPos.x + " | " + oldPos.y + ")" + "NewPos = (" + newPos.x + " | " + newPos.y + ")" + "Pvelo = (" + pVelo.x + " | " + pVelo.y + ")");
+        //console.error("Oldpos = (" + oldPos.x + " | " + oldPos.y + ")" + "NewPos = (" + newPos.x + " | " + newPos.y + ")" + "Pvelo = (" + pVelo.x + " | " + pVelo.y + ")");
         distDir.multiply(multFactor);
         disk.velo = distDir;
     }
@@ -317,20 +322,22 @@ class ComputerPusher extends Pusher{
             let horizontalDelta = gDsk.x - this.x;
             console.log("Horizontal Delta =" + horizontalDelta);
             let verticalDelta = 40;
-            if (gDsk.y < this.lowerBoarder && gDsk.y > this.upperBoarder){
+            if (gDsk.y < this.lowerBoarder && gDsk.y > this.groundLine){
                 console.error("Why you dont move?");
-                verticalDelta = gDsk.y - this.y + Math.random()*5 - 2.5;
+                verticalDelta = gDsk.y - this.y;
             } else {
-                verticalDelta = this.groundLine - this.y + Math.random()*5 - 2.5;
+                verticalDelta = this.groundLine - this.y ;
             }
             let oldPos = new Vec2D(this.x,this.y);
             this.moveTo(this.x + (Math.abs(horizontalDelta) > this.maxVelocity ? Math.sign(horizontalDelta)*this.maxVelocity : horizontalDelta),
-                this.y + (Math.abs(verticalDelta) > this.maxVelocity * 4? Math.sign(verticalDelta)*this.maxVelocity * 4 : verticalDelta * 4));
+                this.y + (Math.abs(verticalDelta) > this.maxVelocity? Math.sign(verticalDelta)*this.maxVelocity: verticalDelta));
             let newPos = new Vec2D(this.x,this.y);
             if (newPos.add(oldPos.multiply(-1)).length() < 0.01){
                 this.notMovedFrames++;
                 if(this.notMovedFrames > 20){
                     this.reset = true;
+                    gDsk.velo.x += 1;
+                    gDsk.velo.y += 1;
                 }
             } else {
                 this.notMovedFrames = 0;
@@ -350,6 +357,39 @@ class ComputerPusher extends Pusher{
 
     }
 }
+function addEntry() {
+    console.log("Add Entry");
+    let localHighscoreArr = getLocalHighscore();
+    //const username = document.getElementById('inputName').value;
+    //const score = document.getElementById('inputScore').value;
+    let score = player.points;
+    username = inputField.value;
+    if (username !== '' && score !== '') {
+        const newEntry = {'Score': score, 'Username': username};
+        let i;
+        if (localHighscoreArr.length !== 0) {
+            for (i = 0; i < localHighscoreArr.length; i++) {
+                if (parseInt(score) >= parseInt(localHighscoreArr[i].Score)) {
+                    localHighscoreArr.splice(i, 0, newEntry);
+                    break;
+                } else if ((i) === localHighscoreArr.length-1) {
+                    localHighscoreArr.push(newEntry);
+                    break;
+                }
+            }
+        } else {
+            localHighscoreArr.push(newEntry);
+        }
+        localStorage.setItem('localHighscore', JSON.stringify(localHighscoreArr));
+    } else {
+        alert('Please insert!');
+    }
+}
+function getLocalHighscore() {
+    let localHighscoreArr = localStorage.getItem('localHighscore');
+    localHighscoreArr = localHighscoreArr ? JSON.parse(localHighscoreArr) : [];
+    return localHighscoreArr;
+}
 function init(){
     canv = document.getElementById("canv");
     canv.style.cursor = "none";
@@ -360,7 +400,7 @@ function init(){
     xOffSet = bRect.left;
     yOffSet = bRect.top;
     let psh = new Pusher(40,50,40, HEIGHT/2, HEIGHT);
-    cPsh = new ComputerPusher(40,200,40, 0, HEIGHT / 2, 4, 40);
+    cPsh = new ComputerPusher(40,200,40, 0, HEIGHT / 2, 2, 40);
     let dsk = new Disk(30,200,200);
     let third =  WIDTH / 3;
 
@@ -378,8 +418,11 @@ function init(){
         newY = e.pageY - yOffSet;
         //pPush.moveTo(x,y);
         //console.log("Mouse");
-    })
+    });
     document.addEventListener("keypress", handleKeyPress );
+    inputForm = document.getElementById("inputForm");
+    inputField = document.getElementById("username");
+    //submitButton = document.getElementById("save").onclick = addEntry();
 }
 
 function handleKeyPress(e) {
@@ -427,40 +470,13 @@ function draw() {
     cPsh.render();
     gDsk.render();
     pPush.render();
-    if (gameRunning) {
-        window.requestAnimationFrame(draw);
-    }
     playerGoal.render();
     computerGoal.render();
-}
-
-function addEntry(username, score) {
-    let localHighscoreArr = getLocalHighscore();
-    //const username = document.getElementById('inputName').value;
-    //const score = document.getElementById('inputScore').value;
-    if (username !== '' && score !== '') {
-        const newEntry = {'Score': score, 'Username': username};
-        let i;
-        if (localHighscoreArr.length !== 0) {
-            for (i = 0; i < localHighscoreArr.length; i++) {
-                if (parseInt(score) >= parseInt(localHighscoreArr[i].Score)) {
-                    localHighscoreArr.splice(i, 0, newEntry);
-                    break;
-                } else if ((i) === localHighscoreArr.length-1) {
-                    localHighscoreArr.push(newEntry);
-                    break;
-                }
-            }
-        } else {
-            localHighscoreArr.push(newEntry);
-        }
-        localStorage.setItem('localHighscore', JSON.stringify(localHighscoreArr));
-    } else {
-        alert('Please insert!');
+    if(player.points >= targetScore || computer.points >= targetScore){
+        gameFinish = true;
+        inputForm.style.display = "block";
     }
-}
-function getLocalHighscore() {
-    let localHighscoreArr = localStorage.getItem('localHighscore');
-    localHighscoreArr = localHighscoreArr ? JSON.parse(localHighscoreArr) : [];
-    return localHighscoreArr;
+    if (gameRunning && !gameFinish) {
+        window.requestAnimationFrame(draw);
+    }
 }
