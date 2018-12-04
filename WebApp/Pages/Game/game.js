@@ -68,7 +68,7 @@ class Disk{
         gC.fill();
     }
     move(){
-        /*let steps = 100;
+        let steps = 100;
         let newPos = new Vec2D(this.x+this.velo.x,this.y+this.velo.y);
         let oldPos = new Vec2D(this.x,this.y);
         let moveVect = this.velo;
@@ -77,17 +77,16 @@ class Disk{
         let formerPos = oldPos;
         for (let i = 0; i <= steps && !pushColl; i++) {
             let intermediatePos = oldPos.clone().add(moveVect.clone().normalize().multiply(steplength * i));
-
-            if(this.checkCollisionWithPusher(pPush)){
+            let ghostDisk = new Disk(this.radius,intermediatePos.x,intermediatePos.y);
+            if(ghostDisk.checkCollisionWithPusher(pPush)) {
                 this.computeCollisionWithPusher(pPush);
+                pushColl = true;
+            } else{
+                formerPos = intermediatePos;
             }
-            formerPos = intermediatePos.clone();
         }
-
-        this.setPos(newPos.x, newPos.y);
-        */
-        this.x += this.velo.x;
-        this.y += this.velo.y;
+        this.x = formerPos.x;
+        this.y = formerPos.y;
         this.velo.x *= DECAY;
         this.velo.y *= DECAY;
         this.checkCollisionWithBorder();
@@ -150,7 +149,7 @@ class Disk{
         distDir.normalize();
         let pOldVec = pusher.getLast();
         let pVelo = new Vec2D(pOldVec.x-pusher.x, pOldVec.y-pusher.y);
-        let multFactor = Math.sqrt(pVelo.length() * pVelo.length() +  0.2 * this.velo.length() * this.velo.length());
+        let multFactor = Math.sqrt(pVelo.length() * pVelo.length() +  0.4 * this.velo.length() * this.velo.length());
         multFactor = (multFactor > CAP ? CAP : multFactor);
         console.error("Pvelo = (" + pVelo.x + " | " + pVelo.y + ")");
         distDir.multiply(multFactor);
@@ -223,7 +222,7 @@ class Pusher{
 
     moveTo(x,y){
         let steps = 100;
-        let newPos = new Vec2D(x,y);
+        let newPos = this.computeBorderCollision(x,y);
         let oldPos = new Vec2D(this.x,this.y);
         let moveVect = new Vec2D(newPos.x - oldPos.x, newPos.y - oldPos.y);
         let steplength = moveVect.length()/steps;
@@ -301,7 +300,7 @@ function init(){
     xOffSet = bRect.left;
     yOffSet = bRect.top;
     let psh = new Pusher(40,50,40, 0, HEIGHT);
-    let dsk = new Disk(30,40,50);
+    let dsk = new Disk(30,200,200);
     let third =  WIDTH / 3;
 
     player = new Player("Player 1", psh);
