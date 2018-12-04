@@ -40,7 +40,7 @@ input {
     width: 55%;
 }
 #inputName{
-    font-family: "Arial" ,sans-serif;
+    font-family: Comic Sans MS, sans-serif;
 
 }
 #save{
@@ -58,7 +58,7 @@ ul#entries li {
     padding: 10px;
     color: mediumslateblue;
     background-image: linear-gradient(#f9f9f9, #e3e3e3);
-    font-family: cursive;
+    font-family: Comic Sans MS, sans-serif;
 }
 ul#entries li:last-child {
     color: darkred;
