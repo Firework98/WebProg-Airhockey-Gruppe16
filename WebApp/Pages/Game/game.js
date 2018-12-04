@@ -62,7 +62,7 @@ class Disk{
         this.col = "black";
     }
     render(){
-        gC.fillStyle = 'rgb(33, 33, 33)';
+        gC.fillStyle = 'rgb(53, 53, 53)';
         gC.beginPath();
 
         gC.arc(this.x,this.y,this.radius,0, 2*Math.PI);
@@ -371,10 +371,10 @@ function drawGameLines() {
     gC.lineWidth = 3;
     gC.beginPath();
     gC.setLineDash([4, 15]);
-    gC.arc(240, 0, 75,-0.035*Math.PI, Math.PI *1);
+    gC.arc(240, 0, 75,-0.035*Math.PI, Math.PI);
     gC.stroke();
     gC.beginPath();
-    gC.arc(240, HEIGHT, 75,Math.PI *1*0.4, Math.PI*2);
+    gC.arc(240, HEIGHT, 75,Math.PI*0.4, Math.PI*2);
     gC.stroke();
     gC.beginPath();
     gC.moveTo(0,HEIGHT/2);
