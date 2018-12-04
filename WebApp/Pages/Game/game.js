@@ -1,5 +1,6 @@
 "use strict";
 let canv;
+let cPsh;
 let gC;
 let pPush;
 let gDsk;
@@ -247,25 +248,17 @@ class Pusher{
         let boundaryColl = false;
         let diskColl = false;
         let formerPos = oldPos;
+        console.error("Old" + oldPos.x + " | " + oldPos.y);
         if(steplength > 0.001){
             for (let i = 1; i <= steps && !diskColl; i++) {
                 let intermediatePos = oldPos.clone().add(moveVect.clone().normalize().multiply(steplength * i));
                 if (this.checkBorderCollision(intermediatePos.x,intermediatePos.y)){
-                    //console.error("Border Collision at (" + intermediatePos.x + " | " + intermediatePos.y + ")");
                     intermediatePos = this.computeBorderCollision(intermediatePos.x,intermediatePos.y);
-                    //console.error("After Border Collision now (" + intermediatePos.x + " | " + intermediatePos.y + ")");
-                    //boundaryColl = true;
                 }
                 let ghostPusher = new Pusher(this.radius,intermediatePos.x,intermediatePos.y,this.upperBoarder,this.lowerBoarder);
-                //this.setPos(intermediatePos.x, intermediatePos.y);
                 if (gDsk.checkCollisionWithPusher(ghostPusher)){
                     this.computeCollisionWithDisk(gDsk,oldPos,intermediatePos,newPos);
-                    console.error("Col at " + i);
-                    //TODO Try Moving Disk out of Pusher
-                    // If possible then continue
-                    // Else If Border Collision
                     if(gDsk.checkCollisionWithPusher(ghostPusher)){
-                        //Collision even after Move. Has to be stuck
                         diskColl = true;
                         newPos = formerPos.clone();
                     }
@@ -279,6 +272,7 @@ class Pusher{
         } else {
             this.setPos(this.x,this.y);
         }
+        console.error("Old" + this.x + " | " + this.y);
     }
 
 
@@ -308,21 +302,35 @@ class Pusher{
     }
 }
 
+class ComputerPusher extends Pusher{
+
+    constructor(radius, x, y, upperBoarder, lowerBoarder, maxVelocity) {
+        super(radius, x, y, upperBoarder, lowerBoarder);
+        this.maxVelocity = maxVelocity;
+    }
+
+    move(){
+        let horizontalDelta = gDsk.x - this.x;
+        console.log("Horizontal Delta =" + horizontalDelta);
+        this.moveTo(this.x + horizontalDelta, this.y);
+    }
+}
 function init(){
     canv = document.getElementById("canv");
-    canv.style.cursor = "pointer";
+    canv.style.cursor = "none";
     if(canv != null){
         gC = canv.getContext("2d");
     }
     let bRect = canv.getBoundingClientRect();
     xOffSet = bRect.left;
     yOffSet = bRect.top;
-    let psh = new Pusher(40,50,40, 0, HEIGHT);
+    let psh = new Pusher(40,50,40, HEIGHT/2, HEIGHT);
+    cPsh = new ComputerPusher(40,200,40, 0, HEIGHT / 2);
     let dsk = new Disk(30,200,200);
     let third =  WIDTH / 3;
 
     player = new Player("Player 1", psh);
-    computer = new Player("Computer", null);
+    computer = new Player("Computer", cPsh);
     computerGoal = new Goal(player,third,third * 2,0);
     playerGoal = new Goal(computer,third ,third *2,HEIGHT);
     player.setGoal(playerGoal);
@@ -380,6 +388,8 @@ function draw() {
     drawGameLines();
     pPush.moveTo(newX,newY);
     gDsk.move();
+    cPsh.move();
+    cPsh.render();
     gDsk.render();
     pPush.render();
     if (gameRunning) {
