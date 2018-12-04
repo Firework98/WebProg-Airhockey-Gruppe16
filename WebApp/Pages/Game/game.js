@@ -63,10 +63,16 @@ class Disk{
         this.col = "black";
     }
     render(){
-        gC.fillStyle = this.col;
+        gC.fillStyle = 'rgb(33, 33, 33)';
         gC.beginPath();
 
         gC.arc(this.x,this.y,this.radius,0, 2*Math.PI);
+        gC.fill();
+
+        gC.fillStyle = this.col;
+        gC.beginPath();
+
+        gC.arc(this.x,this.y,this.radius-5,0, 2*Math.PI);
         gC.fill();
     }
     move(){
@@ -192,6 +198,18 @@ class Pusher{
         //console.log(""+ this.x + "  " + this.y + " " + this.radius);
         gC.beginPath();
         gC.arc(this.x,this.y,this.radius,0, 2* Math.PI);
+        gC.fill();
+
+        gC.fillStyle = 'rgb(155,0,0)';
+        gC.beginPath();
+
+        gC.arc(this.x, this.y, this.radius-5,0,2*Math.PI);
+        gC.fill();
+
+        gC.fillStyle = this.color;
+        gC.beginPath();
+
+        gC.arc(this.x, this.y, 20,0,2*Math.PI);
         gC.fill();
     }
     computeCollisionWithDisk(disk,oldPos,intermediatePos, newPos){
@@ -339,4 +357,35 @@ function draw() {
     }
     playerGoal.render();
     computerGoal.render();
+}
+
+function addEntry(username, score) {
+    let localHighscoreArr = getLocalHighscore();
+    //const username = document.getElementById('inputName').value;
+    //const score = document.getElementById('inputScore').value;
+    if (username !== '' && score !== '') {
+        const newEntry = {'Score': score, 'Username': username};
+        let i;
+        if (localHighscoreArr.length !== 0) {
+            for (i = 0; i < localHighscoreArr.length; i++) {
+                if (parseInt(score) >= parseInt(localHighscoreArr[i].Score)) {
+                    localHighscoreArr.splice(i, 0, newEntry);
+                    break;
+                } else if ((i) === localHighscoreArr.length-1) {
+                    localHighscoreArr.push(newEntry);
+                    break;
+                }
+            }
+        } else {
+            localHighscoreArr.push(newEntry);
+        }
+        localStorage.setItem('localHighscore', JSON.stringify(localHighscoreArr));
+    } else {
+        alert('Please insert!');
+    }
+}
+function getLocalHighscore() {
+    let localHighscoreArr = localStorage.getItem('localHighscore');
+    localHighscoreArr = localHighscoreArr ? JSON.parse(localHighscoreArr) : [];
+    return localHighscoreArr;
 }
