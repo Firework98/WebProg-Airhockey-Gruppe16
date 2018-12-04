@@ -2,8 +2,6 @@
 window.onload = init;
 
 function init() {
-    const button = document.getElementById('save');
-    button.onclick = addEntry;
     const localHighscoreArr = getLocalHighscore();
     for (let i = 0; i < localHighscoreArr.length; i++) {
         writeIntoDOM(i, localHighscoreArr[i]);
