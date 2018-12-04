@@ -17,8 +17,18 @@ footer {
 hr {
     border: solid black 1px;
 }
+p{
+    font-family: Optima, sans-serif;
+    text-align: left;
+    word-spacing: 3px
+}
+h2{
+    color: whitesmoke;
+    text-align: left;
+    font-family: "Andale Mono", sans-serif;
+}
 
-#Img {
+#textWrapper {
     width: 60%;
     height: 100%;
     float: left;
