@@ -14,11 +14,11 @@ let newX;
 let newY;
 let gameRunning;
 
-const DECAY = 0.997;
-const REDUCTION = 0.94;
+const DECAY = 0.999;
+const REDUCTION = 0.96;
 const WIDTH = 480;
 const HEIGHT = 640;
-const CAP = 20;
+const CAP = 30;
 const EPSILONCOLL = 0.2;
 
 class Vec2D {
@@ -304,15 +304,50 @@ class Pusher{
 
 class ComputerPusher extends Pusher{
 
-    constructor(radius, x, y, upperBoarder, lowerBoarder, maxVelocity) {
+    constructor(radius, x, y, upperBoarder, lowerBoarder, maxVelocity,groundLine) {
         super(radius, x, y, upperBoarder, lowerBoarder);
         this.maxVelocity = maxVelocity;
+        this.groundLine = groundLine;
+        this.notMovedFrames = 0;
+        this.reset = false;
     }
 
     move(){
-        let horizontalDelta = gDsk.x - this.x;
-        console.log("Horizontal Delta =" + horizontalDelta);
-        this.moveTo(this.x + horizontalDelta, this.y);
+        if (!this.reset){
+            let horizontalDelta = gDsk.x - this.x;
+            console.log("Horizontal Delta =" + horizontalDelta);
+            let verticalDelta = 40;
+            if (gDsk.y < this.lowerBoarder && gDsk.y > this.upperBoarder){
+                console.error("Why you dont move?");
+                verticalDelta = gDsk.y - this.y + Math.random()*5 - 2.5;
+            } else {
+                verticalDelta = this.groundLine - this.y + Math.random()*5 - 2.5;
+            }
+            let oldPos = new Vec2D(this.x,this.y);
+            this.moveTo(this.x + (Math.abs(horizontalDelta) > this.maxVelocity ? Math.sign(horizontalDelta)*this.maxVelocity : horizontalDelta),
+                this.y + (Math.abs(verticalDelta) > this.maxVelocity * 4? Math.sign(verticalDelta)*this.maxVelocity * 4 : verticalDelta * 4));
+            let newPos = new Vec2D(this.x,this.y);
+            if (newPos.add(oldPos.multiply(-1)).length() < 0.01){
+                this.notMovedFrames++;
+                if(this.notMovedFrames > 20){
+                    this.reset = true;
+                }
+            } else {
+                this.notMovedFrames = 0;
+            }
+        } else{
+            let origin = WIDTH / 2;
+            if (this.y === this.groundLine && this.x === origin){
+                this.reset = false;
+            } else{
+                let verticalDelta = this.groundLine - this.y;
+                let horizontalDelta = origin - this.x;
+                this.moveTo(this.x + (Math.abs(horizontalDelta) > this.maxVelocity * 3 ? Math.sign(horizontalDelta)*this.maxVelocity * 3 : horizontalDelta),
+                    this.y + (Math.abs(verticalDelta) > this.maxVelocity ? Math.sign(verticalDelta)*this.maxVelocity : verticalDelta));
+            }
+        }
+
+
     }
 }
 function init(){
@@ -325,7 +360,7 @@ function init(){
     xOffSet = bRect.left;
     yOffSet = bRect.top;
     let psh = new Pusher(40,50,40, HEIGHT/2, HEIGHT);
-    cPsh = new ComputerPusher(40,200,40, 0, HEIGHT / 2);
+    cPsh = new ComputerPusher(40,200,40, 0, HEIGHT / 2, 4, 40);
     let dsk = new Disk(30,200,200);
     let third =  WIDTH / 3;
 
