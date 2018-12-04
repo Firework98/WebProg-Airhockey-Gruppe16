@@ -46,27 +46,27 @@ input {
 #save{
     background-color: palegreen;
 }
-ol#entries {
+ul#entries {
     width: 50%;
     border: 1px solid #a9a9a9;
     border-radius: 5px;
     margin-top: 10px;
     list-style-type: none;
 }
-ol#entries li {
+ul#entries li {
     border-bottom: 1px solid #a9a9a9;
     padding: 10px;
     color: mediumslateblue;
     background-image: linear-gradient(#f9f9f9, #e3e3e3);
     font-family: cursive;
 }
-ol#entries li:last-child {
+ul#entries li:last-child {
     color: darkred;
     border-bottom: none;
     border-bottom-right-radius: 5px;
     border-bottom-left-radius: 5px;
 }
-ol#entries li:first-child {
+ul#entries li:first-child {
     color: darkgoldenrod;
     border-top-right-radius: 5px;
     border-top-left-radius: 5px;
