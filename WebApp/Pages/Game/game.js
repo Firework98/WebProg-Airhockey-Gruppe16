@@ -158,7 +158,7 @@ class Disk{
         let pVelo = new Vec2D(pOldVec.x-pusher.x, pOldVec.y-pusher.y);
         let multFactor = Math.sqrt(pVelo.length() * pVelo.length() +  0.2 * this.velo.length() * this.velo.length());
         multFactor = (multFactor > CAP ? CAP : multFactor);
-        console.error("Pvelo = (" + pVelo.x + " | " + pVelo.y + ")");
+        //console.error("Pvelo = (" + pVelo.x + " | " + pVelo.y + ")");
         distDir.multiply(multFactor);
         this.velo = distDir;
     }
@@ -234,7 +234,7 @@ class Pusher{
         let pVelo = new Vec2D(newPos.x-oldPos.x, newPos.y-oldPos.y);
         let multFactor = Math.sqrt(pVelo.length() * pVelo.length() + 0.3 * disk.velo.length() * disk.velo.length());
         multFactor = (multFactor > CAP ? CAP : multFactor);
-        console.error("Oldpos = (" + oldPos.x + " | " + oldPos.y + ")" + "NewPos = (" + newPos.x + " | " + newPos.y + ")" + "Pvelo = (" + pVelo.x + " | " + pVelo.y + ")");
+        //console.error("Oldpos = (" + oldPos.x + " | " + oldPos.y + ")" + "NewPos = (" + newPos.x + " | " + newPos.y + ")" + "Pvelo = (" + pVelo.x + " | " + pVelo.y + ")");
         distDir.multiply(multFactor);
         disk.velo = distDir;
     }
@@ -261,7 +261,7 @@ class Pusher{
                 //this.setPos(intermediatePos.x, intermediatePos.y);
                 if (gDsk.checkCollisionWithPusher(ghostPusher)){
                     this.computeCollisionWithDisk(gDsk,oldPos,intermediatePos,newPos);
-                    console.error("Col at " + i);
+                    //console.error("Col at " + i);
                     //TODO Try Moving Disk out of Pusher
                     // If possible then continue
                     // Else If Border Collision
@@ -336,7 +336,7 @@ function init(){
         newY = e.pageY - yOffSet;
         //pPush.moveTo(x,y);
         //console.log("Mouse");
-    })
+    });
     document.addEventListener("keypress", handleKeyPress );
 }
 
@@ -383,11 +383,11 @@ function draw() {
     gDsk.move();
     gDsk.render();
     pPush.render();
+    playerGoal.render();
+    computerGoal.render();
     if (gameRunning) {
         window.requestAnimationFrame(draw);
     }
-    playerGoal.render();
-    computerGoal.render();
 }
 
 function addEntry(username, score) {
