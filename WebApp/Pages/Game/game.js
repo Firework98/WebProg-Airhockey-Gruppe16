@@ -362,7 +362,7 @@ function addEntry() {
     let localHighscoreArr = getLocalHighscore();
     //const username = document.getElementById('inputName').value;
     //const score = document.getElementById('inputScore').value;
-    let score = player.points;
+    let score = player.points + " : " + computer.points;
     username = inputField.value;
     if (username !== '' && score !== '') {
         const newEntry = {'Score': score, 'Username': username};
