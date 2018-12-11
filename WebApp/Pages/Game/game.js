@@ -43,7 +43,7 @@ request.onload = function() {
     CAP = gameSettings.spieldaten[0].CAP;
     EPSILONCOLL = gameSettings.spieldaten[0].EPSILONCOLL;
     init();
-}
+};
 
 class Vec2D {
     constructor(x, y) {
@@ -178,7 +178,6 @@ class Disk{
             }
         }
         return ret;
-        //console.log("Velo =" + this.velo);
     }
 
     isInGoalSpace(goal){
@@ -197,7 +196,6 @@ class Disk{
         let pVelo = new Vec2D(pOldVec.x-pusher.x, pOldVec.y-pusher.y);
         let multFactor = Math.sqrt(pVelo.length() * pVelo.length() +  0.4 * this.velo.length() * this.velo.length());
         multFactor = (multFactor > CAP ? CAP : multFactor);
-        //console.error("Pvelo = (" + pVelo.x + " | " + pVelo.y + ")");
         distDir.multiply(multFactor);
         this.velo = distDir;
     }
@@ -298,7 +296,6 @@ class Pusher{
         let pVelo = new Vec2D(newPos.x-oldPos.x, newPos.y-oldPos.y);
         let multFactor = Math.sqrt(pVelo.length() * pVelo.length() + 0.3 * disk.velo.length() * disk.velo.length());
         multFactor = (multFactor > CAP ? CAP : multFactor);
-        //console.error("Oldpos = (" + oldPos.x + " | " + oldPos.y + ")" + "NewPos = (" + newPos.x + " | " + newPos.y + ")" + "Pvelo = (" + pVelo.x + " | " + pVelo.y + ")");
         distDir.multiply(multFactor);
         disk.velo = distDir;
     }
@@ -340,7 +337,6 @@ class Pusher{
         } else {
             this.setPos(this.x,this.y);
         }
-        console.error("Old" + this.x + " | " + this.y);
     }
 
 
@@ -419,10 +415,7 @@ class ComputerPusher extends Pusher{
     }
 }
 function addEntry() {
-    console.log("Add Entry");
     let localHighscoreArr = getLocalHighscore();
-    //const username = document.getElementById('inputName').value;
-    //const score = document.getElementById('inputScore').value;
     let score = player.points + " : " + computer.points;
     username = inputField.value;
     if (username !== '' && score !== '') {
