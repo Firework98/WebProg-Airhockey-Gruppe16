@@ -11,7 +11,7 @@
 <header>
     <h1>Game</h1>
 </header>
-<body onload="init();">
+<body>
 <audio id="audio" autoplay loop src="../../Ressources/Komiku.mp3"></audio>
 <button id="mute" onclick="audioStop()">&#9835;</button>
 <button id="pause" onclick="gamePause()">&#10074;&#10074;</button>
@@ -27,7 +27,7 @@
     </div>
     <div id="inputForm">
         <form>
-            Username :<input id="username" type="text">
+            <label for="username">Username :</label><input id="username" type="text">
             <input onclick="addEntry()" id="save" type="submit" value="Speichern">
         </form>
     </div>

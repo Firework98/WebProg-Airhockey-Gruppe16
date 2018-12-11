@@ -41,7 +41,8 @@ request.onload = function() {
     HEIGHT = gameSettings.spieldaten[0].HEIGHT;
     CAP = gameSettings.spieldaten[0].CAP;
     EPSILONCOLL = gameSettings.spieldaten[0].EPSILONCOLL;
-}
+    init();
+};
 
 class Vec2D {
     constructor(x, y) {
@@ -168,7 +169,6 @@ class Disk{
             }
         }
         return ret;
-        //console.log("Velo =" + this.velo);
     }
 
     isInGoalSpace(goal){
@@ -187,7 +187,6 @@ class Disk{
         let pVelo = new Vec2D(pOldVec.x-pusher.x, pOldVec.y-pusher.y);
         let multFactor = Math.sqrt(pVelo.length() * pVelo.length() +  0.4 * this.velo.length() * this.velo.length());
         multFactor = (multFactor > CAP ? CAP : multFactor);
-        //console.error("Pvelo = (" + pVelo.x + " | " + pVelo.y + ")");
         distDir.multiply(multFactor);
         this.velo = distDir;
     }
@@ -268,7 +267,6 @@ class Pusher{
 
     render() {
         gC.fillStyle = this.color;
-        //console.log(""+ this.x + "  " + this.y + " " + this.radius);
         gC.beginPath();
         gC.arc(this.x,this.y,this.radius,0, 2* Math.PI);
         gC.fill();
@@ -293,7 +291,6 @@ class Pusher{
         let pVelo = new Vec2D(newPos.x-oldPos.x, newPos.y-oldPos.y);
         let multFactor = Math.sqrt(pVelo.length() * pVelo.length() + 0.3 * disk.velo.length() * disk.velo.length());
         multFactor = (multFactor > CAP ? CAP : multFactor);
-        //console.error("Oldpos = (" + oldPos.x + " | " + oldPos.y + ")" + "NewPos = (" + newPos.x + " | " + newPos.y + ")" + "Pvelo = (" + pVelo.x + " | " + pVelo.y + ")");
         distDir.multiply(multFactor);
         disk.velo = distDir;
     }
@@ -307,7 +304,6 @@ class Pusher{
         let boundaryColl = false;
         let diskColl = false;
         let formerPos = oldPos;
-        console.error("Old" + oldPos.x + " | " + oldPos.y);
         if(steplength > 0.001){
             for (let i = 1; i <= steps && !diskColl; i++) {
                 let intermediatePos = oldPos.clone().add(moveVect.clone().normalize().multiply(steplength * i));
@@ -320,7 +316,6 @@ class Pusher{
                 if (gDsk.checkCollisionWithPusher(ghostPusher)){
                     //If the Disk couldn't be moved out of the Pusher the Pusher cant be moved this way
                     if( ! gDsk.moveOutOfPusher(ghostPusher)){
-                        console.error("Blocked");
                         this.computeCollisionWithDisk(gDsk,oldPos,intermediatePos,newPos);
                         diskColl = true;
                         newPos = formerPos.clone();
@@ -337,7 +332,6 @@ class Pusher{
         } else {
             this.setPos(this.x,this.y);
         }
-        console.error("Old" + this.x + " | " + this.y);
     }
 
 
@@ -380,10 +374,8 @@ class ComputerPusher extends Pusher{
     move(){
         if (!this.reset){
             let horizontalDelta = gDsk.x - this.x;
-            console.log("Horizontal Delta =" + horizontalDelta);
             let verticalDelta = 40;
             if (gDsk.y < this.lowerBoarder && gDsk.y > this.groundLine){
-                console.error("Why you dont move?");
                 verticalDelta = gDsk.y - this.y;
             } else {
                 verticalDelta = this.groundLine - this.y ;
@@ -418,10 +410,7 @@ class ComputerPusher extends Pusher{
     }
 }
 function addEntry() {
-    console.log("Add Entry");
     let localHighscoreArr = getLocalHighscore();
-    //const username = document.getElementById('inputName').value;
-    //const score = document.getElementById('inputScore').value;
     let score = player.points + " : " + computer.points;
     username = inputField.value;
     if (username !== '' && score !== '') {
@@ -477,7 +466,6 @@ function init(){
         newX = e.pageX - xOffSet;
         newY = e.pageY - yOffSet;
         //pPush.moveTo(x,y);
-        //console.log("Mouse");
     });
     document.addEventListener("keypress", handleKeyPress );
     inputForm = document.getElementById("inputForm");
@@ -522,7 +510,6 @@ function drawGameLines() {
 }
 
 function draw() {
-    //console.log("Draw");
     drawGameLines();
     pPush.moveTo(newX,newY);
     gDsk.move();
