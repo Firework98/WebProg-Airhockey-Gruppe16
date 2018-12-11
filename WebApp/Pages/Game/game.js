@@ -42,6 +42,7 @@ request.onload = function() {
     HEIGHT = gameSettings.spieldaten[0].HEIGHT;
     CAP = gameSettings.spieldaten[0].CAP;
     EPSILONCOLL = gameSettings.spieldaten[0].EPSILONCOLL;
+    init();
 }
 
 class Vec2D {
@@ -125,11 +126,11 @@ class Disk{
         }
     }
     resetAfterGoal(goal){
+        this.render();
         this.x = WIDTH / 2;
         this.y = HEIGHT /2;
         this.velo.x = 0;
-        this.velo.y = goal.
-
+        this.velo.y = (goal.y === 0 ? -2 : 2);
     }
     checkCollisionWithBorder(){
         let ret = false;
@@ -154,17 +155,11 @@ class Disk{
             let distToPGoal = Math.abs(playerGoal.y-this.y);
             if (distToCGoal <= this.radius && this.isInGoalSpace(computerGoal)){
                 computerGoal.player.points++;
-                this.x = WIDTH / 2;
-                this.y = HEIGHT / 2;
-                this.velo.x = 0;
-                this.velo.y = -2;
+                this.resetAfterGoal(computerGoal);
             } else{
                 if (distToPGoal <= this.radius && this.isInGoalSpace(playerGoal)){
                     playerGoal.player.points++;
-                    this.x = WIDTH / 2;
-                    this.y = HEIGHT / 2;
-                    this.velo.x = 0;
-                    this.velo.y = 2;
+                    this.resetAfterGoal(playerGoal);
                 }
             }
             document.getElementById("playerScore").innerText = player.points;
@@ -279,7 +274,6 @@ class Pusher{
 
     render() {
         gC.fillStyle = this.color;
-        //console.log(""+ this.x + "  " + this.y + " " + this.radius);
         gC.beginPath();
         gC.arc(this.x,this.y,this.radius,0, 2* Math.PI);
         gC.fill();
@@ -457,6 +451,7 @@ function getLocalHighscore() {
     localHighscoreArr = localHighscoreArr ? JSON.parse(localHighscoreArr) : [];
     return localHighscoreArr;
 }
+
 function init(){
     canv = document.getElementById("canv");
     canv.style.cursor = "pointer";
