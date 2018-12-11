@@ -18,13 +18,29 @@ let gameFinish = false;
 let inputField;
 let username;
 
-const targetScore = 7;
-const DECAY = 0.999;
-const REDUCTION = 0.96;
-const WIDTH = 480;
-const HEIGHT = 640;
-const CAP = 20;
-const EPSILONCOLL = 0.2;
+let TARGETSCORE;
+let DECAY;
+let REDUCTION;
+let WIDTH;
+let HEIGHT;
+let CAP;
+let EPSILONCOLL;
+
+let request = new XMLHttpRequest();
+request.open('GET', 'http://localhost:8080/Airhockey/WebApp/Ressources/gameSettings.json');
+request.responseType = 'json';
+request.send();
+
+request.onload = function() {
+    const gameSettings = request.response;
+    TARGETSCORE = gameSettings.spieldaten[0].TARGETSCORE;
+    DECAY = gameSettings.spieldaten[0].DECAY;
+    REDUCTION = gameSettings.spieldaten[0].REDUCTION;
+    WIDTH = gameSettings.spieldaten[0].WIDTH;
+    HEIGHT = gameSettings.spieldaten[0].HEIGHT;
+    CAP = gameSettings.spieldaten[0].CAP;
+    EPSILONCOLL = gameSettings.spieldaten[0].EPSILONCOLL;
+}
 
 class Vec2D {
     constructor(x, y) {
@@ -472,7 +488,7 @@ function draw() {
     pPush.render();
     playerGoal.render();
     computerGoal.render();
-    if(player.points >= targetScore || computer.points >= targetScore){
+    if(player.points >= TARGETSCORE || computer.points >= TARGETSCORE){
         gameFinish = true;
         inputForm.style.display = "block";
     }

@@ -1,0 +1,4 @@
+{
+  "spieldaten" : [{"TARGETSCORE" : 7, "DECAY" : 0.999, "REDUCTION" : 0.96, "WIDTH" : 480, "HEIGHT" :  640, "CAP" : 20, "EPSILONCOLL" : 0.2},
+                  {"TARGETSCORE" : 10, "DECAY" : 0.999, "REDUCTION" : 0.96, "WIDTH" : 480, "HEIGHT" :  640, "CAP" : 20, "EPSILONCOLL" : 0.2}]
+}
