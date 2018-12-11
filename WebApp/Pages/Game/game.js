@@ -17,6 +17,7 @@ let inputForm;
 let gameFinish = false;
 let inputField;
 let username;
+let debug;
 
 const targetScore = 7;
 const DECAY = 0.999;
@@ -107,12 +108,18 @@ class Disk{
             this.computeCollisionWithPusher(pPush);
         }
     }
+    resetAfterGoal(goal){
+        this.x = WIDTH / 2;
+        this.y = HEIGHT /2;
+        this.velo.x = 0;
+        this.velo.y = goal.
+
+    }
     checkCollisionWithBorder(){
         let ret = false;
         let checkGoals = false;
         if(this.y + this.radius <= HEIGHT && this.y - this.radius >= 0){
             checkGoals = false;
-            ret = true;
         }
         if (this.y + this.radius > HEIGHT){
             ret = true;
@@ -131,9 +138,17 @@ class Disk{
             let distToPGoal = Math.abs(playerGoal.y-this.y);
             if (distToCGoal <= this.radius && this.isInGoalSpace(computerGoal)){
                 computerGoal.player.points++;
+                this.x = WIDTH / 2;
+                this.y = HEIGHT / 2;
+                this.velo.x = 0;
+                this.velo.y = -2;
             } else{
                 if (distToPGoal <= this.radius && this.isInGoalSpace(playerGoal)){
                     playerGoal.player.points++;
+                    this.x = WIDTH / 2;
+                    this.y = HEIGHT / 2;
+                    this.velo.x = 0;
+                    this.velo.y = 2;
                 }
             }
             document.getElementById("playerScore").innerText = player.points;
@@ -191,8 +206,8 @@ class Disk{
         let requiredDist = this.radius + pusher.radius + OUTSET;
         distDir.multiply(requiredDist);
         let tempDisk = this.clone();
-        tempDisk.x += distDir.x;
-        tempDisk.y += distDir.y;
+        tempDisk.x = pusher.x + distDir.x;
+        tempDisk.y = pusher.y + distDir.y;
         if (!tempDisk.checkCollisionWithBorder()) {
             this.x = tempDisk.x;
             this.y = tempDisk.y;
@@ -211,10 +226,6 @@ class Player{
         this.pusher = pusher;
         this.name = name;
         this.points = 0;
-    }
-    setGoal(goal)
-    {
-        this.goal = goal;
     }
 }
 
@@ -291,7 +302,6 @@ class Pusher{
         let boundaryColl = false;
         let diskColl = false;
         let formerPos = oldPos;
-        console.error("Old" + oldPos.x + " | " + oldPos.y);
         if(steplength > 0.001){
             for (let i = 1; i <= steps && !diskColl; i++) {
                 let intermediatePos = oldPos.clone().add(moveVect.clone().normalize().multiply(steplength * i));
@@ -304,7 +314,6 @@ class Pusher{
                 if (gDsk.checkCollisionWithPusher(ghostPusher)){
                     //If the Disk couldn't be moved out of the Pusher the Pusher cant be moved this way
                     if( ! gDsk.moveOutOfPusher(ghostPusher)){
-                        console.error("Blocked");
                         this.computeCollisionWithDisk(gDsk,oldPos,intermediatePos,newPos);
                         diskColl = true;
                         newPos = formerPos.clone();
@@ -364,10 +373,8 @@ class ComputerPusher extends Pusher{
     move(){
         if (!this.reset){
             let horizontalDelta = gDsk.x - this.x;
-            console.log("Horizontal Delta =" + horizontalDelta);
             let verticalDelta = 40;
             if (gDsk.y < this.lowerBoarder && gDsk.y > this.groundLine){
-                console.error("Why you dont move?");
                 verticalDelta = gDsk.y - this.y;
             } else {
                 verticalDelta = this.groundLine - this.y ;
@@ -440,6 +447,7 @@ function init(){
     if(canv != null){
         gC = canv.getContext("2d");
     }
+    debug = document.getElementsByTagName("h1").item(0);
     let bRect = canv.getBoundingClientRect();
     xOffSet = bRect.left;
     yOffSet = bRect.top;
@@ -452,21 +460,16 @@ function init(){
     computer = new Player("Computer", cPsh);
     computerGoal = new Goal(player,third,third * 2,0);
     playerGoal = new Goal(computer,third ,third *2,HEIGHT);
-    player.setGoal(playerGoal);
-    computer.setGoal(computerGoal);
     pPush = psh;
     gDsk = dsk;
     window.requestAnimationFrame(draw);
     document.addEventListener("mousemove",function (e){
         newX = e.pageX - xOffSet;
         newY = e.pageY - yOffSet;
-        //pPush.moveTo(x,y);
-        //console.log("Mouse");
     });
     document.addEventListener("keypress", handleKeyPress );
     inputForm = document.getElementById("inputForm");
     inputField = document.getElementById("username");
-    //submitButton = document.getElementById("save").onclick = addEntry();
 }
 
 function handleKeyPress(e) {
@@ -506,7 +509,6 @@ function drawGameLines() {
 }
 
 function draw() {
-    //console.log("Draw");
     drawGameLines();
     pPush.moveTo(newX,newY);
     gDsk.move();
