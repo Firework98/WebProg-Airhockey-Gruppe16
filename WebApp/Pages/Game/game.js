@@ -25,6 +25,7 @@ let WIDTH;
 let HEIGHT;
 let CAP;
 let EPSILONCOLL;
+const OUTSET = 0.5;
 
 let request = new XMLHttpRequest();
 request.open('GET', 'http://localhost:8080/Airhockey/WebApp/Ressources/gameSettings.json');
@@ -123,16 +124,20 @@ class Disk{
         }
     }
     checkCollisionWithBorder(){
+        let ret = false;
         let checkGoals = false;
         if(this.y + this.radius <= HEIGHT && this.y - this.radius >= 0){
             checkGoals = false;
+            ret = true;
         }
         if (this.y + this.radius > HEIGHT){
+            ret = true;
             this.y = HEIGHT - this.radius;
             this.velo.y = -(this.velo.y * REDUCTION);
             checkGoals = true;
         }
         if (this.y - this.radius < 0){
+            ret = true;
             this.y = 0 + this.radius;
             this.velo.y = -(this.velo.y * REDUCTION);
             checkGoals = true;
@@ -152,14 +157,17 @@ class Disk{
 
         } else{
             if (this.x + this.radius > WIDTH){
+                ret = true;
                 this.x = WIDTH - this.radius;
                 this.velo.x = -(this.velo.x * REDUCTION)
             }
             if (this.x - this.radius < 0){
+                ret = true;
                 this.x = this.radius;
                 this.velo.x = -(this.velo.x * REDUCTION)
             }
         }
+        return ret;
         //console.log("Velo =" + this.velo);
     }
 
@@ -183,6 +191,36 @@ class Disk{
         distDir.multiply(multFactor);
         this.velo = distDir;
     }
+    clone(){
+        return new Disk(this.radius,this.x,this.y);
+    }
+    checkHorizontalBorderCollide(){
+        return (this.x + this.radius > WIDTH || this.x - this.radius < 0);
+    }
+    checkVerticalBorderCollide(){
+        return (this.y - this.radius < 0 || this.y + this.radius > HEIGHT);
+    }
+    moveOutOfPusher(pusher) {
+        let distVec = new Vec2D(this.x - pusher.x, this.y - pusher.y);
+        let distDir = distVec.clone();
+        distDir.normalize();
+        let requiredDist = this.radius + pusher.radius + OUTSET;
+        distDir.multiply(requiredDist);
+        let tempDisk = this.clone();
+        tempDisk.x += distDir.x;
+        tempDisk.y += distDir.y;
+        if (!tempDisk.checkCollisionWithBorder()) {
+            this.x = tempDisk.x;
+            this.y = tempDisk.y;
+            return true;
+        } else {
+            //TODO Probably breaking
+
+        }
+        return false;
+    }
+
+
 }
 class Player{
     constructor(name,pusher){
@@ -273,18 +311,24 @@ class Pusher{
         if(steplength > 0.001){
             for (let i = 1; i <= steps && !diskColl; i++) {
                 let intermediatePos = oldPos.clone().add(moveVect.clone().normalize().multiply(steplength * i));
+                //If the intermediatePos collides with the border it has to be changed so that it doesnt exceed bounds
                 if (this.checkBorderCollision(intermediatePos.x,intermediatePos.y)){
                     intermediatePos = this.computeBorderCollision(intermediatePos.x,intermediatePos.y);
                 }
+                //Create a ghostPusher, to use this for collision computation
                 let ghostPusher = new Pusher(this.radius,intermediatePos.x,intermediatePos.y,this.upperBoarder,this.lowerBoarder);
                 if (gDsk.checkCollisionWithPusher(ghostPusher)){
-                    this.computeCollisionWithDisk(gDsk,oldPos,intermediatePos,newPos);
-                    if(gDsk.checkCollisionWithPusher(ghostPusher)){
+                    //If the Disk couldn't be moved out of the Pusher the Pusher cant be moved this way
+                    if( ! gDsk.moveOutOfPusher(ghostPusher)){
+                        console.error("Blocked");
+                        this.computeCollisionWithDisk(gDsk,oldPos,intermediatePos,newPos);
                         diskColl = true;
                         newPos = formerPos.clone();
+                    } else{
+                        this.computeCollisionWithDisk(gDsk,oldPos,intermediatePos,newPos);
+                        newPos = intermediatePos.clone();
                     }
-
-                } else {
+                } else{
                     newPos = intermediatePos.clone();
                 }
                 formerPos = intermediatePos.clone();
@@ -408,7 +452,7 @@ function getLocalHighscore() {
 }
 function init(){
     canv = document.getElementById("canv");
-    canv.style.cursor = "none";
+    canv.style.cursor = "pointer";
     if(canv != null){
         gC = canv.getContext("2d");
     }
