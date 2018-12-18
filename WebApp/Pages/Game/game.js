@@ -19,6 +19,7 @@ let inputField;
 let username;
 let debug;
 let lvlPicker;
+let bRect;
 
 let gLvl;
 let targetScore;
@@ -39,10 +40,9 @@ function gameStart(lvl){
     lvlPicker.style.display = "none";
     getGameData();
 }
-
 function getGameData() {
     let request = new XMLHttpRequest();
-    request.open('GET', 'http://localhost:8080/Airhockey/WebApp/Ressources/gameSettings.json');
+    request.open('GET', 'http://localhost:8080/Airhockey/WebApp/Ressources/gameSettings.json' + "?"+(new Date().getTime()));
     request.responseType = 'json';
     request.send();
     request.onload = function() {
@@ -115,7 +115,6 @@ class Disk{
     }
     move(){
         let steps = 100;
-        let newPos = new Vec2D(this.x+this.velo.x,this.y+this.velo.y);
         let oldPos = new Vec2D(this.x,this.y);
         let moveVect = this.velo;
         let steplength = moveVect.length()/steps;
@@ -217,12 +216,6 @@ class Disk{
     clone(){
         return new Disk(this.radius,this.x,this.y);
     }
-    checkHorizontalBorderCollide(){
-        return (this.x + this.radius > width || this.x - this.radius < 0);
-    }
-    checkVerticalBorderCollide(){
-        return (this.y - this.radius < 0 || this.y + this.radius > height);
-    }
     moveOutOfPusher(pusher) {
         let distVec = new Vec2D(this.x - pusher.x, this.y - pusher.y);
         let distDir = distVec.clone();
@@ -246,9 +239,7 @@ class Disk{
 
 }
 class Player{
-    constructor(name,pusher){
-        this.pusher = pusher;
-        this.name = name;
+    constructor(){
         this.points = 0;
     }
 }
@@ -303,11 +294,10 @@ class Pusher{
         gC.arc(this.x, this.y, 20,0,2*Math.PI);
         gC.fill();
     }
-    computeCollisionWithDisk(disk,oldPos,intermediatePos, newPos){
+    static computeCollisionWithDisk(disk, oldPos, intermediatePos, newPos){
         let distVec = new Vec2D(disk.x-intermediatePos.x,disk.y-intermediatePos.y);
         let distDir = distVec.clone();
         distDir.normalize();
-        let pOldVec = oldPos;
         let pVelo = new Vec2D(newPos.x-oldPos.x, newPos.y-oldPos.y);
         let multFactor = Math.sqrt(pVelo.length() * pVelo.length() + 0.3 * disk.velo.length() * disk.velo.length());
         multFactor = (multFactor > cap ? cap : multFactor);
@@ -321,7 +311,6 @@ class Pusher{
         let oldPos = new Vec2D(this.x,this.y);
         let moveVect = new Vec2D(newPos.x - oldPos.x, newPos.y - oldPos.y);
         let steplength = moveVect.length()/steps;
-        let boundaryColl = false;
         let diskColl = false;
         let formerPos = oldPos;
         if(steplength > 0.001){
@@ -336,11 +325,11 @@ class Pusher{
                 if (gDsk.checkCollisionWithPusher(ghostPusher)){
                     //If the Disk couldn't be moved out of the Pusher the Pusher cant be moved this way
                     if( ! gDsk.moveOutOfPusher(ghostPusher)){
-                        this.computeCollisionWithDisk(gDsk,oldPos,intermediatePos,newPos);
+                        Pusher.computeCollisionWithDisk(gDsk,oldPos,intermediatePos,newPos);
                         diskColl = true;
                         newPos = formerPos.clone();
                     } else{
-                        this.computeCollisionWithDisk(gDsk,oldPos,intermediatePos,newPos);
+                        Pusher.computeCollisionWithDisk(gDsk,oldPos,intermediatePos,newPos);
                         newPos = intermediatePos.clone();
                     }
                 } else{
@@ -470,13 +459,17 @@ function init(){
     canv.style.cursor = "pointer";
     if(canv != null){
         gC = canv.getContext("2d");
+        bRect = canv.getBoundingClientRect();
+        xOffSet = bRect.left;
+        yOffSet = bRect.top;
+        document.addEventListener("mousemove",function (e){
+            newX = e.pageX - xOffSet;
+            newY = e.pageY - yOffSet;
+        });
     }
     debug = document.getElementsByTagName("h1").item(0);
-    let bRect = canv.getBoundingClientRect();
-    xOffSet = bRect.left;
-    yOffSet = bRect.top;
-    let psh = new Pusher(40,50,40, height/2 + 30, height);
-    cPsh = new ComputerPusher(40,200,40, 0, height / 2 - 30, computerPace, 40);
+    let psh = new Pusher(40,50,40, height/2, height);
+    cPsh = new ComputerPusher(40,200,40, 0, height / 2, computerPace, 40);
     let dsk = new Disk(30,200,200);
     let third =  width / 3;
 
@@ -487,10 +480,6 @@ function init(){
     pPush = psh;
     gDsk = dsk;
     window.requestAnimationFrame(draw);
-    document.addEventListener("mousemove",function (e){
-        newX = e.pageX - xOffSet;
-        newY = e.pageY - yOffSet;
-    });
     document.addEventListener("keypress", handleKeyPress );
     inputForm = document.getElementById("inputForm");
     inputField = document.getElementById("username");
