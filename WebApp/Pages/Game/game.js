@@ -515,8 +515,12 @@ function drawGameLines() {
     gC.arc(240, height, 75,Math.PI*0.4, Math.PI*2);
     gC.stroke();
     gC.beginPath();
-    gC.moveTo(0,height/2);
-    gC.lineTo(width, height/2);
+    gC.moveTo(0,height/2-30);
+    gC.lineTo(width, height/2-30);
+    gC.stroke();
+    gC.beginPath();
+    gC.moveTo(0,height/2+30);
+    gC.lineTo(width, height/2+30);
     gC.stroke();
     gC.setLineDash([0]);
 }
