@@ -38,7 +38,7 @@ function gameStart(lvl){
     lvlPicker = document.getElementById("lvlPicker");
     lvlPicker.style.display = "none";
     getGameData();
-};
+}
 
 function getGameData() {
     let request = new XMLHttpRequest();
@@ -58,7 +58,7 @@ function getGameData() {
         console.log(computerPace);
         init();
     };
-};
+}
 
 class Vec2D {
     constructor(x, y) {
@@ -475,8 +475,8 @@ function init(){
     let bRect = canv.getBoundingClientRect();
     xOffSet = bRect.left;
     yOffSet = bRect.top;
-    let psh = new Pusher(40,50,40, height/2, height);
-    cPsh = new ComputerPusher(40,200,40, 0, height / 2, computerPace, 40);
+    let psh = new Pusher(40,50,40, height/2 + 30, height);
+    cPsh = new ComputerPusher(40,200,40, 0, height / 2 - 30, computerPace, 40);
     let dsk = new Disk(30,200,200);
     let third =  width / 3;
 
