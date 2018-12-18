@@ -380,7 +380,8 @@ class ComputerPusher extends Pusher{
         if (!this.reset){
             let horizontalDelta = gDsk.x - this.x;
             let verticalDelta = 40;
-            if (gDsk.y < this.lowerBoarder && gDsk.y > this.groundLine){
+            let diskInField = gDsk.y > this.upperBoarder && gDsk.y < this.lowerBoarder;
+            if (gDsk.y < this.lowerBoarder && gDsk.y > this.groundLine - 1){
                 verticalDelta = gDsk.y - this.y;
             } else {
                 verticalDelta = this.groundLine - this.y ;
@@ -391,7 +392,7 @@ class ComputerPusher extends Pusher{
             let newPos = new Vec2D(this.x,this.y);
             if (newPos.add(oldPos.multiply(-1)).length() < 0.01){
                 this.notMovedFrames++;
-                if(this.notMovedFrames > 20){
+                if(this.notMovedFrames > 20 && diskInField){
                     this.reset = true;
                     gDsk.velo.x += 1;
                     gDsk.velo.y += 1;
@@ -400,8 +401,12 @@ class ComputerPusher extends Pusher{
                 this.notMovedFrames = 0;
             }
         } else{
+            let eps = 0.1;
             let origin = WIDTH / 2;
-            if (this.y === this.groundLine && this.x === origin){
+            console.error(""+this.x+" "+ this.y);
+            console.error(""+origin+" "+this.groundLine);
+            if (Math.abs(this.y-this.groundLine)<eps && Math.abs(this.x-origin)<eps){
+                console.error("Resetted");
                 this.reset = false;
             } else{
                 let verticalDelta = this.groundLine - this.y;
