@@ -18,31 +18,46 @@ let gameFinish = false;
 let inputField;
 let username;
 let debug;
+let lvlPicker;
 
-let TARGETSCORE;
-let DECAY;
-let REDUCTION;
-let WIDTH;
-let HEIGHT;
-let CAP;
-let EPSILONCOLL;
+let gLvl;
+let targetScore;
+let decay;
+let reduction;
+let width;
+let height;
+let cap;
+let epsiloncoll;
+let computerPace;
+
 const OUTSET = 0.5;
 
-let request = new XMLHttpRequest();
-request.open('GET', 'http://localhost:8080/Airhockey/WebApp/Ressources/gameSettings.json');
-request.responseType = 'json';
-request.send();
+function gameStart(lvl){
+    gLvl = lvl-1;
+    console.log(gLvl);
+    lvlPicker = document.getElementById("lvlPicker");
+    lvlPicker.style.display = "none";
+    getGameData();
+};
 
-request.onload = function() {
-    const gameSettings = request.response;
-    TARGETSCORE = gameSettings.spieldaten[0].TARGETSCORE;
-    DECAY = gameSettings.spieldaten[0].DECAY;
-    REDUCTION = gameSettings.spieldaten[0].REDUCTION;
-    WIDTH = gameSettings.spieldaten[0].WIDTH;
-    HEIGHT = gameSettings.spieldaten[0].HEIGHT;
-    CAP = gameSettings.spieldaten[0].CAP;
-    EPSILONCOLL = gameSettings.spieldaten[0].EPSILONCOLL;
-    init();
+function getGameData() {
+    let request = new XMLHttpRequest();
+    request.open('GET', 'http://localhost:8080/Airhockey/WebApp/Ressources/gameSettings.json');
+    request.responseType = 'json';
+    request.send();
+    request.onload = function() {
+        const gameSettings = request.response;
+        targetScore = gameSettings.spieldaten[gLvl].TARGETSCORE;
+        decay = gameSettings.spieldaten[gLvl].DECAY;
+        reduction = gameSettings.spieldaten[gLvl].REDUCTION;
+        width = gameSettings.spieldaten[gLvl].WIDTH;
+        height = gameSettings.spieldaten[gLvl].HEIGHT;
+        cap = gameSettings.spieldaten[gLvl].CAP;
+        epsiloncoll = gameSettings.spieldaten[gLvl].EPSILONCOLL;
+        computerPace = gameSettings.spieldaten[gLvl].COMPUTERPACE;
+        console.log(computerPace);
+        init();
+    };
 };
 
 class Vec2D {
@@ -118,8 +133,8 @@ class Disk{
         }
         this.x = formerPos.x;
         this.y = formerPos.y;
-        this.velo.x *= DECAY;
-        this.velo.y *= DECAY;
+        this.velo.x *= decay;
+        this.velo.y *= decay;
         this.checkCollisionWithBorder();
         if (this.checkCollisionWithPusher(pPush)) {
             this.computeCollisionWithPusher(pPush);
@@ -127,27 +142,27 @@ class Disk{
     }
     resetAfterGoal(goal){
         this.render();
-        this.x = WIDTH / 2;
-        this.y = HEIGHT /2;
+        this.x = width / 2;
+        this.y = height /2;
         this.velo.x = 0;
         this.velo.y = (goal.y === 0 ? -2 : 2);
     }
     checkCollisionWithBorder(){
         let ret = false;
         let checkGoals = false;
-        if(this.y + this.radius <= HEIGHT && this.y - this.radius >= 0){
+        if(this.y + this.radius <= height && this.y - this.radius >= 0){
             checkGoals = false;
         }
-        if (this.y + this.radius > HEIGHT){
+        if (this.y + this.radius > height){
             ret = true;
-            this.y = HEIGHT - this.radius;
-            this.velo.y = -(this.velo.y * REDUCTION);
+            this.y = height - this.radius;
+            this.velo.y = -(this.velo.y * reduction);
             checkGoals = true;
         }
         if (this.y - this.radius < 0){
             ret = true;
             this.y = 0 + this.radius;
-            this.velo.y = -(this.velo.y * REDUCTION);
+            this.velo.y = -(this.velo.y * reduction);
             checkGoals = true;
         }
         if(checkGoals && (this.isInGoalSpace(computerGoal) || this.isInGoalSpace(playerGoal))){
@@ -166,15 +181,15 @@ class Disk{
             document.getElementById("computerScore").innerText = computer.points;
 
         } else{
-            if (this.x + this.radius > WIDTH){
+            if (this.x + this.radius > width){
                 ret = true;
-                this.x = WIDTH - this.radius;
-                this.velo.x = -(this.velo.x * REDUCTION)
+                this.x = width - this.radius;
+                this.velo.x = -(this.velo.x * reduction)
             }
             if (this.x - this.radius < 0){
                 ret = true;
                 this.x = this.radius;
-                this.velo.x = -(this.velo.x * REDUCTION)
+                this.velo.x = -(this.velo.x * reduction)
             }
         }
         return ret;
@@ -185,7 +200,7 @@ class Disk{
     }
     checkCollisionWithPusher(pusher){
         let distVec = new Vec2D(this.x-pusher.x,this.y-pusher.y);
-        return distVec.length() < pusher.radius + this.radius + EPSILONCOLL;
+        return distVec.length() < pusher.radius + this.radius + epsiloncoll;
     }
 
     computeCollisionWithPusher(pusher){
@@ -195,7 +210,7 @@ class Disk{
         let pOldVec = pusher.getLast();
         let pVelo = new Vec2D(pOldVec.x-pusher.x, pOldVec.y-pusher.y);
         let multFactor = Math.sqrt(pVelo.length() * pVelo.length() +  0.4 * this.velo.length() * this.velo.length());
-        multFactor = (multFactor > CAP ? CAP : multFactor);
+        multFactor = (multFactor > cap ? cap : multFactor);
         distDir.multiply(multFactor);
         this.velo = distDir;
     }
@@ -203,10 +218,10 @@ class Disk{
         return new Disk(this.radius,this.x,this.y);
     }
     checkHorizontalBorderCollide(){
-        return (this.x + this.radius > WIDTH || this.x - this.radius < 0);
+        return (this.x + this.radius > width || this.x - this.radius < 0);
     }
     checkVerticalBorderCollide(){
-        return (this.y - this.radius < 0 || this.y + this.radius > HEIGHT);
+        return (this.y - this.radius < 0 || this.y + this.radius > height);
     }
     moveOutOfPusher(pusher) {
         let distVec = new Vec2D(this.x - pusher.x, this.y - pusher.y);
@@ -295,7 +310,7 @@ class Pusher{
         let pOldVec = oldPos;
         let pVelo = new Vec2D(newPos.x-oldPos.x, newPos.y-oldPos.y);
         let multFactor = Math.sqrt(pVelo.length() * pVelo.length() + 0.3 * disk.velo.length() * disk.velo.length());
-        multFactor = (multFactor > CAP ? CAP : multFactor);
+        multFactor = (multFactor > cap ? cap : multFactor);
         distDir.multiply(multFactor);
         disk.velo = distDir;
     }
@@ -347,11 +362,11 @@ class Pusher{
     }
 
     checkBorderCollision(newX,newY){
-        return newX + this.radius > WIDTH || newX - this.radius < 0 || newY + this.radius > this.lowerBoarder || newY - this.radius < this.upperBoarder;
+        return newX + this.radius > width || newX - this.radius < 0 || newY + this.radius > this.lowerBoarder || newY - this.radius < this.upperBoarder;
     }
     computeBorderCollision(newX,newY){
-        if (newX + this.radius > WIDTH){
-            newX = WIDTH - this.radius;
+        if (newX + this.radius > width){
+            newX = width - this.radius;
         }
         if (newX - this.radius < 0){
             newX = this.radius;
@@ -402,7 +417,7 @@ class ComputerPusher extends Pusher{
             }
         } else{
             let eps = 0.1;
-            let origin = WIDTH / 2;
+            let origin = width / 2;
             console.error(""+this.x+" "+ this.y);
             console.error(""+origin+" "+this.groundLine);
             if (Math.abs(this.y-this.groundLine)<eps && Math.abs(this.x-origin)<eps){
@@ -460,15 +475,15 @@ function init(){
     let bRect = canv.getBoundingClientRect();
     xOffSet = bRect.left;
     yOffSet = bRect.top;
-    let psh = new Pusher(40,50,40, HEIGHT/2, HEIGHT);
-    cPsh = new ComputerPusher(40,200,40, 0, HEIGHT / 2, 2, 40);
+    let psh = new Pusher(40,50,40, height/2, height);
+    cPsh = new ComputerPusher(40,200,40, 0, height / 2, computerPace, 40);
     let dsk = new Disk(30,200,200);
-    let third =  WIDTH / 3;
+    let third =  width / 3;
 
     player = new Player("Player 1", psh);
     computer = new Player("Computer", cPsh);
     computerGoal = new Goal(player,third,third * 2,0);
-    playerGoal = new Goal(computer,third ,third *2,HEIGHT);
+    playerGoal = new Goal(computer,third ,third *2,height);
     pPush = psh;
     gDsk = dsk;
     window.requestAnimationFrame(draw);
@@ -499,7 +514,7 @@ function gamePause() {
 
 function drawGameLines() {
     gC.fillStyle = "#eef8ff";
-    gC.fillRect(0, 0, WIDTH, HEIGHT);
+    gC.fillRect(0, 0, width, height);
     gC.fill();
     gC.strokeStyle = "blue";
     gC.lineWidth = 3;
@@ -508,11 +523,11 @@ function drawGameLines() {
     gC.arc(240, 0, 75,-0.035*Math.PI, Math.PI);
     gC.stroke();
     gC.beginPath();
-    gC.arc(240, HEIGHT, 75,Math.PI*0.4, Math.PI*2);
+    gC.arc(240, height, 75,Math.PI*0.4, Math.PI*2);
     gC.stroke();
     gC.beginPath();
-    gC.moveTo(0,HEIGHT/2);
-    gC.lineTo(WIDTH, HEIGHT/2);
+    gC.moveTo(0,height/2);
+    gC.lineTo(width, height/2);
     gC.stroke();
     gC.setLineDash([0]);
 }
@@ -527,7 +542,7 @@ function draw() {
     pPush.render();
     playerGoal.render();
     computerGoal.render();
-    if(player.points >= TARGETSCORE || computer.points >= TARGETSCORE){
+    if(player.points >= targetScore || computer.points >= targetScore){
         gameFinish = true;
         inputForm.style.display = "block";
     }
