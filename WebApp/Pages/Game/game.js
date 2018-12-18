@@ -20,6 +20,7 @@ let username;
 let debug;
 let lvlPicker;
 let bRect;
+let scoreBoard;
 
 let gLvl;
 let targetScore;
@@ -38,6 +39,8 @@ function gameStart(lvl){
     console.log(gLvl);
     lvlPicker = document.getElementById("lvlPicker");
     lvlPicker.style.display = "none";
+    scoreBoard = document.getElementById("scoreWrapper");
+    scoreBoard.style.display = "block";
     getGameData();
 }
 function getGameData() {
