@@ -468,7 +468,7 @@ function init(){
         });
     }
     debug = document.getElementsByTagName("h1").item(0);
-    let psh = new Pusher(40,50,40, height/2 + 30, height);
+    let psh = new Pusher(40,200,height-40, height/2 + 30, height);
     cPsh = new ComputerPusher(40,200,40, 0, height / 2 - 30 , computerPace, 40);
     let dsk = new Disk(30,200,200);
     let third =  width / 3;
@@ -486,7 +486,7 @@ function init(){
 }
 
 function handleKeyPress(e) {
-    if(e.key === "Escape"){
+    if(e.key === "Escape" && !gameFinish){
         gamePause();
     }
 }
