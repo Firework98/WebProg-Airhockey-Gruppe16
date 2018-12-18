@@ -42,7 +42,7 @@ function gameStart(lvl){
 
 function getGameData() {
     let request = new XMLHttpRequest();
-    request.open('GET', 'http://localhost:8080/Airhockey/WebApp/Ressources/gameSettings.json');
+    request.open('GET', 'http://localhost:8080/Airhockey/WebApp/Ressources/gameSettings.json' + "?"+(new Date().getTime()));
     request.responseType = 'json';
     request.send();
     request.onload = function() {
@@ -59,7 +59,6 @@ function getGameData() {
         init();
     };
 };
-
 class Vec2D {
     constructor(x, y) {
         this.x = x;
