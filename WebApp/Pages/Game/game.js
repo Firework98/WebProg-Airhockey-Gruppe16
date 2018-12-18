@@ -144,10 +144,12 @@ class Disk{
     }
     resetAfterGoal(goal){
         this.render();
-        this.x = width / 2;
-        this.y = height /2;
-        this.velo.x = 0;
-        this.velo.y = (goal.y === 0 ? -2 : 2);
+        if (computer.points < targetScore && player.points < targetScore){
+            this.x = width / 2;
+            this.y = height /2;
+            this.velo.x = 0;
+            this.velo.y = (goal.y === 0 ? -2 : 2);
+        }
     }
     checkCollisionWithBorder(){
         let ret = false;
@@ -232,9 +234,6 @@ class Disk{
             this.x = tempDisk.x;
             this.y = tempDisk.y;
             return true;
-        } else {
-            //TODO Probably breaking
-
         }
         return false;
     }
@@ -401,8 +400,11 @@ class ComputerPusher extends Pusher{
                 this.notMovedFrames++;
                 if(this.notMovedFrames > 20 && diskInField){
                     this.reset = true;
-                    gDsk.velo.x += 1;
-                    gDsk.velo.y += 1;
+                    let veloVec = new Vec2D(width/2 - gDsk.x, height/2 - gDsk.y);
+                    veloVec.normalize();
+                    veloVec.multiply(10);
+                    gDsk.velo.x += veloVec.x;
+                    gDsk.velo.y += veloVec.y;
                 }
             } else {
                 this.notMovedFrames = 0;
