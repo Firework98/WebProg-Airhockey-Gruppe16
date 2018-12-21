@@ -20,6 +20,7 @@ let username;
 let debug;
 let lvlPicker;
 let bRect;
+let scoreBoard;
 
 let gLvl;
 let targetScore;
@@ -38,6 +39,8 @@ function gameStart(lvl){
     console.log(gLvl);
     lvlPicker = document.getElementById("lvlPicker");
     lvlPicker.style.display = "none";
+    scoreBoard = document.getElementById("scoreWrapper");
+    scoreBoard.style.display = "block";
     getGameData();
 }
 function getGameData() {
@@ -141,10 +144,12 @@ class Disk{
     }
     resetAfterGoal(goal){
         this.render();
-        this.x = width / 2;
-        this.y = height /2;
-        this.velo.x = 0;
-        this.velo.y = (goal.y === 0 ? -2 : 2);
+        if (computer.points < targetScore && player.points < targetScore){
+            this.x = width / 2;
+            this.y = height /2;
+            this.velo.x = 0;
+            this.velo.y = (goal.y === 0 ? -2 : 2);
+        }
     }
     checkCollisionWithBorder(){
         let ret = false;
@@ -229,9 +234,6 @@ class Disk{
             this.x = tempDisk.x;
             this.y = tempDisk.y;
             return true;
-        } else {
-            //TODO Probably breaking
-
         }
         return false;
     }
@@ -398,8 +400,11 @@ class ComputerPusher extends Pusher{
                 this.notMovedFrames++;
                 if(this.notMovedFrames > 20 && diskInField){
                     this.reset = true;
-                    gDsk.velo.x += 1;
-                    gDsk.velo.y += 1;
+                    let veloVec = new Vec2D(width/2 - gDsk.x, height/2 - gDsk.y);
+                    veloVec.normalize();
+                    veloVec.multiply(10);
+                    gDsk.velo.x += veloVec.x;
+                    gDsk.velo.y += veloVec.y;
                 }
             } else {
                 this.notMovedFrames = 0;
@@ -468,7 +473,7 @@ function init(){
         });
     }
     debug = document.getElementsByTagName("h1").item(0);
-    let psh = new Pusher(40,50,40, height/2 + 30, height);
+    let psh = new Pusher(40,200,height-40, height/2 + 30, height);
     cPsh = new ComputerPusher(40,200,40, 0, height / 2 - 30 , computerPace, 40);
     let dsk = new Disk(30,200,200);
     let third =  width / 3;
@@ -486,7 +491,7 @@ function init(){
 }
 
 function handleKeyPress(e) {
-    if(e.key === "Escape"){
+    if(e.key === "Escape" && !gameFinish){
         gamePause();
     }
 }
