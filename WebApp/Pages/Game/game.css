@@ -50,4 +50,34 @@ h1 {
 }
 #inputForm {
     display: none;
+    border: solid;
+    border-radius: 7px;
+    position: absolute;
+    left: 43.25%;
+    top: 48%;
+    background-color: lightsteelblue;
+    height: 15%;
+    width: 20%;
+}
+#username{
+    background-color: gold;
+    position: relative;
+    top: 20px;
+}
+label{
+    background-color: lightsteelblue;
+    font-family: Optima sans-serif;
+    font-size: 150%;
+    position: relative;
+    top: 20px;
+}
+#save {
+    background-color: palegreen;
+    border : groove;
+    border-radius: 3px;
+    border-width: 1px;
+    font-size: 150%;
+    position: relative;
+    left: 29%;
+    top: 30px;
 }
