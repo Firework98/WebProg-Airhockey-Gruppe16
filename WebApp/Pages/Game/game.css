@@ -53,14 +53,14 @@ h1 {
     border: solid;
     border-radius: 7px;
     position: absolute;
-    left: 43.25%;
-    top: 48%;
+    left: 40%;
+    top: 49%;
     background-color: lightsteelblue;
     height: 15%;
     width: 20%;
 }
 #username{
-    background-color: gold;
+    background-color: whitesmoke;
     position: relative;
     top: 20px;
 }
