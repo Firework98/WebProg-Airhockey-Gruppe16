@@ -7,6 +7,7 @@
     <link rel="stylesheet" type="text/css" href="../../GlobalStyles/navBar.css">
     <script src="../../GlobalScript/global.js"></script>
     <script src="game.js"></script>
+    <link href="https://fonts.googleapis.com/css?family=Anton|Indie+Flower" rel="stylesheet">
 </head>
 <header>
     <h1>Game</h1>
@@ -29,9 +30,9 @@
         <canvas id="canv" height="640" width="480"></canvas>
     </div>
     <div id="lvlPicker">
-        Please select Level!
-        <button id="lvlOne" onclick="gameStart(1)" value="1">Level 1</button>
-        <button id="lvlTwo" onclick="gameStart(2)" value="2">Level 2</button>
+        <div id="ueberschrift">Level Auswahl:</div>
+        <button class="lvlButtons" id="lvlOne" onclick="gameStart(1)" value="1">Easy</button>
+        <button id="lvlTwo" onclick="gameStart(2)" value="2">Hard</button>
     </div>
     <div id="scoreWrapper">
         <div id="playerScoreLabel">

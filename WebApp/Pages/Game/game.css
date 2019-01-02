@@ -48,6 +48,46 @@ h1 {
     height: 30px;
     float: right;
 }
+#lvlPicker{
+    position: absolute;
+    left: 35%;
+    margin-top: 5%;
+
+    width: 40%;
+    height: 60%;
+
+}
+#ueberschrift{
+    font-family: "Century Gothic", CenturyGothic, Geneva, AppleGothic, sans-serif;
+    font-size: 250%;
+    color: beige;
+}
+#lvlOne{
+    background-color: lightgoldenrodyellow;
+    border-radius: 8px;
+
+    position: relative;
+    top: 25%;
+    width: 30%;
+    height: 30%;
+
+    font-size: larger;
+    font-family: 'Indie Flower', cursive;
+}
+#lvlTwo{
+    background-color: lightgoldenrodyellow;
+    border-radius: 8px;
+
+    position: relative;
+    left: 15%;
+    top: 25%;
+    width: 30%;
+    height: 30%;
+
+    font-size: larger;
+
+    font-family: 'Anton', sans-serif;
+}
 #inputForm {
     display: none;
     border: solid;
