@@ -18,16 +18,15 @@ table {
 }
 
 th {
-    background-color: #414141;
     color: whitesmoke;
-    font-family: "Andale Mono", sans-serif;
+    font-family: "Courier New", monospace;
     background-color: black;
 }
 
 td {
     text-align: left;
     font-size: 125%;
-    font-family: Optima;
+    font-family: "Arial", sans-serif;
 }
 
 tr:nth-child(even) {

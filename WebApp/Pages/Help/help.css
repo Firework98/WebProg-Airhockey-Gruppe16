@@ -1,15 +1,15 @@
 @import "../../GlobalStyles/global.css";
 
 h2 {
-    color: whitesmoke;
     text-align: left;
-    font-family: "Andale Mono", sans-serif;
+    font-family: "Courier", monospace;
 }
 
 p {
-    font-family: Optima sans-serif;
+    font-family: "Arial", sans-serif;
+    color: whitesmoke;
     text-align: justify;
-    word-spacing: 3px
+    word-spacing: 3px;
 }
 
 hr {

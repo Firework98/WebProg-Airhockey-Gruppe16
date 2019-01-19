@@ -17,35 +17,42 @@ footer {
 hr{
     border: solid black 1px;
 }
+
 p{
-    font-family: Comic Sans MS, sans-serif;
+    font-family: "Comic Sans MS", sans-serif;
 }
+
 form {
     width: 15em;
     float: right;
 }
+
 input {
     width: 86%;
     margin-bottom: 2em;
 }
+
 #formWrapper{
     float: left;
     padding-left: 5%;
     padding-top: 5%;
 }
+
 #warpperEntries{
     float: left;
     padding-left: 5%;
     padding-top: 5%;
     width: 55%;
 }
-#inputName{
-    font-family: Comic Sans MS, sans-serif;
 
+#inputName{
+    font-family: "Comic Sans MS", sans-serif;
 }
+
 #save{
     background-color: palegreen;
 }
+
 ul#entries {
     width: 50%;
     border: 1px solid #a9a9a9;
@@ -53,19 +60,22 @@ ul#entries {
     margin-top: 10px;
     list-style-type: none;
 }
+
 ul#entries li {
     border-bottom: 1px solid #a9a9a9;
     padding: 10px;
     color: mediumslateblue;
     background-image: linear-gradient(#f9f9f9, #e3e3e3);
-    font-family: Comic Sans MS, sans-serif;
+    font-family: "Comic Sans MS", sans-serif;
 }
+
 ul#entries li:last-child {
     color: darkred;
     border-bottom: none;
     border-bottom-right-radius: 5px;
     border-bottom-left-radius: 5px;
 }
+
 ul#entries li:first-child {
     color: darkgoldenrod;
     border-top-right-radius: 5px;

@@ -48,46 +48,44 @@ h1 {
     height: 30px;
     float: right;
 }
+
 #lvlPicker{
     position: absolute;
     left: 35%;
     margin-top: 5%;
-
     width: 40%;
     height: 60%;
 
 }
+
 #ueberschrift{
-    font-family: "Century Gothic", CenturyGothic, Geneva, AppleGothic, sans-serif;
+    font-family: "Courier", monospace;
     font-size: 250%;
-    color: beige;
 }
+
 #lvlOne{
     background-color: lightgoldenrodyellow;
     border-radius: 8px;
-
     position: relative;
     top: 25%;
     width: 30%;
     height: 30%;
-
     font-size: larger;
-    font-family: 'Indie Flower', cursive;
+    font-family: "Comic Sans MS", sans-serif;
 }
+
 #lvlTwo{
     background-color: lightgoldenrodyellow;
     border-radius: 8px;
-
     position: relative;
     left: 15%;
     top: 25%;
     width: 30%;
     height: 30%;
-
     font-size: larger;
-
-    font-family: 'Anton', sans-serif;
+    font-family: "Impact", sans-serif;
 }
+
 #inputForm {
     display: none;
     border: solid;
@@ -99,18 +97,21 @@ h1 {
     height: 15%;
     width: 20%;
 }
+
 #username{
     background-color: whitesmoke;
     position: relative;
     top: 20px;
 }
+
 label{
     background-color: lightsteelblue;
-    font-family: Optima sans-serif;
-    font-size: 150%;
+    font-family: "Verdana", sans-serif;
+    font-size: 130%;
     position: relative;
     top: 20px;
 }
+
 #save {
     background-color: palegreen;
     border : groove;
@@ -118,9 +119,9 @@ label{
     border-width: 1px;
     font-size: 150%;
     position: relative;
-    left: 29%;
     top: 30px;
 }
+
 #scoreWrapper {
     display: none;
 }
