@@ -1,37 +1,53 @@
 "use strict";
+
+//Variables needed for DOM Manipulation and Graphics
 let canv;
-let cPsh;
 let gC;
-let pPush;
-let gDsk;
+let inputForm;
+let inputField;
+let lvlPicker;
+let bRect;
+let scoreBoard;
+//Offset of the Canvas. Needed To Calculate Mouse Position
 let xOffSet;
 let yOffSet;
+//Game objects
+let cPsh;
+let pPush;
+let gDsk;
 let computer;
 let player;
 let computerGoal;
 let playerGoal;
+//Position where the mouse should be moved in the next Frame
 let newX;
 let newY;
-let gameRunning;
-let inputForm;
-let gameFinish = false;
-let inputField;
-let username;
-let debug;
-let lvlPicker;
-let bRect;
-let scoreBoard;
 
+//Is the game still running (Not paused)
+let gameRunning;
+//Is the game won
+let gameFinish = false;
+
+//Game Variables set by JSON
+//Which Difficulty
 let gLvl;
+//Until Which Score should be played
 let targetScore;
+//How heavy should the disk velocity decay (Multiplicated)
 let decay;
+//How much should the disk velocity be reduced when it collides with the border
 let reduction;
+//Width of the field
 let width;
 let height;
+//Maximum Velocity
 let cap;
+//How far should the collision radius be extended. Makes collision Smoother
 let epsiloncoll;
+//Maximum Velocity of the Computer
 let computerPace;
 
+//How far the disk gets outset of the Pusher whilst moving the pusher
 const OUTSET = 0.5;
 
 function gameStart(lvl){
@@ -43,6 +59,7 @@ function gameStart(lvl){
     scoreBoard.style.display = "block";
     getGameData();
 }
+
 function getGameData() {
     let request = new XMLHttpRequest();
     request.open('GET', 'http://localhost:8080/Airhockey/WebApp/Ressources/gameSettings.json' + "?"+(new Date().getTime()));
@@ -64,6 +81,11 @@ function getGameData() {
 }
 
 class Vec2D {
+    /**
+     * Constructs a new Vector
+     * @param x - x Coordinate
+     * @param y - y Coordinate
+     */
     constructor(x, y) {
         this.x = x;
         this.y = y;
@@ -245,7 +267,6 @@ class Player{
         this.points = 0;
     }
 }
-
 class Goal{
     constructor(player,xLeft,xRight,y){
         this.player = player;
@@ -371,7 +392,6 @@ class Pusher{
         return new Vec2D(newX,newY);
     }
 }
-
 class ComputerPusher extends Pusher{
 
     constructor(radius, x, y, upperBoarder, lowerBoarder, maxVelocity,groundLine) {
@@ -428,10 +448,11 @@ class ComputerPusher extends Pusher{
 
     }
 }
+
 function addEntry() {
     let localHighscoreArr = getLocalHighscore();
     let score = player.points + " : " + computer.points;
-    username = inputField.value;
+    let username = inputField.value;
     if (username !== '' && score !== '') {
         const newEntry = {'Score': score, 'Username': username};
         let i;
@@ -472,7 +493,6 @@ function init(){
             newY = e.pageY - yOffSet;
         });
     }
-    debug = document.getElementsByTagName("h1").item(0);
     let psh = new Pusher(40,200,height-40, height/2 + 30, height);
     cPsh = new ComputerPusher(40,200,40, 0, height / 2 - 30 , computerPace, 40);
     let dsk = new Disk(30,200,200);
