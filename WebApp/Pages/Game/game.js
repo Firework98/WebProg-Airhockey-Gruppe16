@@ -655,6 +655,9 @@ class ComputerPusher extends Pusher{
     }
 }
 
+/**
+ * read out the input fields and saves a new entry into the localstorage
+ */
 function addEntry() {
     let localHighscoreArr = getLocalHighscore();
     let score = player.points + " : " + computer.points;
@@ -677,15 +680,26 @@ function addEntry() {
         }
         localStorage.setItem('localHighscore', JSON.stringify(localHighscoreArr));
     } else {
-        alert('Please insert!');
+
     }
 }
+
+/**
+ * loads the highscore array out of the local storage
+ * @returns {string}
+ */
 function getLocalHighscore() {
     let localHighscoreArr = localStorage.getItem('localHighscore');
     localHighscoreArr = localHighscoreArr ? JSON.parse(localHighscoreArr) : [];
     return localHighscoreArr;
 }
 
+/**
+ * sets up the canvas
+ * adds mouse listener
+ * initialized the player, computer and pusher objects
+ * triggers draw method (game loop)
+ */
 function init(){
     canv = document.getElementById("canv");
     canv.style.cursor = "pointer";
@@ -716,12 +730,19 @@ function init(){
     inputField = document.getElementById("username");
 }
 
+/**
+ * react on the key-press-event matched on the Escape key
+ * @param e event
+ */
 function handleKeyPress(e) {
     if(e.key === "Escape" && !gameFinish){
         gamePause();
     }
 }
 
+/**
+ * to stop the game and switch the symbols in the pause/play button
+ */
 function gamePause() {
     gameRunning = !gameRunning;
     if(gameRunning){
@@ -732,6 +753,9 @@ function gamePause() {
     }
 }
 
+/**
+ * draw function which setup the lines on the canvas
+ */
 function drawGameLines() {
     gC.fillStyle = "#eef8ff";
     gC.fillRect(0, 0, width, height);
@@ -756,6 +780,10 @@ function drawGameLines() {
     gC.setLineDash([0]);
 }
 
+/**
+ * draw the game lines, goal lines and player/computer pusher on the canvas.
+ * additionally triggers itself with the next frame and pause the game when the pause oder finish bools are true
+ */
 function draw() {
     drawGameLines();
     pPush.moveTo(newX,newY);
