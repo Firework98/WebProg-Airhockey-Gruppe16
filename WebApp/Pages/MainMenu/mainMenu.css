@@ -14,18 +14,21 @@ footer {
     clear: both;
     height: 5%;
 }
+
 hr {
     border: solid black 1px;
 }
+
 p{
-    font-family: Optima, sans-serif;
+    font-family: "Arial", sans-serif;
+    color: whitesmoke;
     text-align: left;
     word-spacing: 3px
 }
+
 h2{
-    color: whitesmoke;
     text-align: left;
-    font-family: "Andale Mono", sans-serif;
+    font-family: "Courier", monospace;
 }
 
 #textWrapper {
