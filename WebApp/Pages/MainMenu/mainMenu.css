@@ -23,12 +23,14 @@ p{
     font-family: "Arial", sans-serif;
     color: whitesmoke;
     text-align: left;
-    word-spacing: 3px
+    word-spacing: 3px;
+    font-size: 140%;
 }
 
 h2{
     text-align: left;
     font-family: "Courier", monospace;
+    font-size: 150%;
 }
 
 #textWrapper {
