@@ -749,7 +749,7 @@ function gamePause() {
         document.getElementById("pause").innerHTML = "&#10074;&#10074;";
         draw();
     }else{
-        document.getElementById("pause").innerHTML = "&#8227;";
+        document.getElementById("pause").innerHTML = "&#9654;";
     }
 }
 
