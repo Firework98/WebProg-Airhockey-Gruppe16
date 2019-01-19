@@ -679,8 +679,6 @@ function addEntry() {
             localHighscoreArr.push(newEntry);
         }
         localStorage.setItem('localHighscore', JSON.stringify(localHighscoreArr));
-    } else {
-
     }
 }
 
