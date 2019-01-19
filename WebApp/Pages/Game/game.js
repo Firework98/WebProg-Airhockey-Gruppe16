@@ -52,7 +52,6 @@ const OUTSET = 0.5;
 //set lvl-variable; hide lvl-picker; start game setup
 function gameStart(lvl){
     gLvl = lvl-1;
-    console.log(gLvl);
     lvlPicker = document.getElementById("lvlPicker");
     lvlPicker.style.display = "none";
     scoreBoard = document.getElementById("scoreWrapper");
@@ -74,7 +73,6 @@ function getGameData() {
         cap = gameSettings.spieldaten[gLvl].CAP;
         epsiloncoll = gameSettings.spieldaten[gLvl].EPSILONCOLL;
         computerPace = gameSettings.spieldaten[gLvl].COMPUTERPACE;
-        console.log(computerPace);
         init();
     };
 }
@@ -593,6 +591,9 @@ class ComputerPusher extends Pusher{
         this.reset = false;
     }
 
+    /**
+     * Move the Pusher automatically
+     */
     move(){
         //Check whether the Pusher should reset
         if (!this.reset){
@@ -625,9 +626,9 @@ class ComputerPusher extends Pusher{
                     //Give the Disk an velocity towards the center of the field. To prevent the computer to loop
                     let veloVec = new Vec2D(width/2 - gDsk.x, height/2 - gDsk.y);
                     veloVec.normalize();
-                    veloVec.multiply(30);
+                    veloVec.multiply(15);
                     gDsk.velo.x = veloVec.x;
-                    gDsk.velo.y = veloVec.y;
+                    gDsk.velo.y = veloVec.y * 2;
                 }
             } else {
                 //Else reset the not moved frames
@@ -688,7 +689,7 @@ function getLocalHighscore() {
 
 function init(){
     canv = document.getElementById("canv");
-    canv.style.cursor = "pointer";
+    canv.style.cursor = "none";
     if(canv != null){
         gC = canv.getContext("2d");
         bRect = canv.getBoundingClientRect();
