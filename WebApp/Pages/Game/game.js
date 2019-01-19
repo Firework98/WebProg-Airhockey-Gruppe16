@@ -49,7 +49,7 @@ let computerPace;
 
 //How far the disk gets outset of the Pusher whilst moving the pusher
 const OUTSET = 0.5;
-
+//set lvl-variable; hide lvl-picker; start game setup
 function gameStart(lvl){
     gLvl = lvl-1;
     console.log(gLvl);
@@ -59,7 +59,6 @@ function gameStart(lvl){
     scoreBoard.style.display = "block";
     getGameData();
 }
-
 function getGameData() {
     let request = new XMLHttpRequest();
     request.open('GET', 'http://localhost:8080/Airhockey/WebApp/Ressources/gameSettings.json' + "?"+(new Date().getTime()));
